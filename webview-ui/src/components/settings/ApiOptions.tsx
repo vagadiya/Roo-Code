@@ -1581,7 +1581,7 @@ export function normalizeApiConfiguration(apiConfiguration?: ApiConfiguration) {
 					selectedModelId: "custom-arn",
 					selectedModelInfo: {
 						maxTokens: 5000,
-						contextWindow: 128_000,
+						contextWindow: 200_000,
 						supportsPromptCache: false,
 						supportsImages: true,
 					},
