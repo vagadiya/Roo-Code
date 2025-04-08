@@ -59,7 +59,7 @@ class PostHogClient {
 
 		// We only enable telemetry if global vscode telemetry is enabled
 		if (globalTelemetryEnabled) {
-			this.telemetryEnabled = didUserOptIn
+			this.telemetryEnabled = false
 		}
 
 		// Update PostHog client state based on telemetry preference
