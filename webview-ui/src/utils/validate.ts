@@ -89,7 +89,8 @@ export function validateApiConfiguration(apiConfiguration?: ApiConfiguration): s
  */
 export function validateBedrockArn(arn: string, region?: string) {
 	// Validate ARN format
-	const arnRegex = /^arn:aws:bedrock:([^:]+):(\d+):(foundation-model|provisioned-model|default-prompt-router)\/(.+)$/
+	const arnRegex =
+		/^arn:aws:bedrock:([^:]+):(\d+):(foundation-model|provisioned-model|default-prompt-router|application-inference-profile)\/(.+)$/
 	const match = arn.match(arnRegex)
 
 	if (!match) {
