@@ -1718,10 +1718,11 @@ export function normalizeApiConfiguration(apiConfiguration?: ApiConfiguration) {
 					selectedProvider: provider,
 					selectedModelId: "custom-arn",
 					selectedModelInfo: {
-						maxTokens: 5000,
-						contextWindow: 128_000,
-						supportsPromptCache: false,
+						maxTokens: 64_000,
+						contextWindow: 200_000,
+						supportsPromptCache: true,
 						supportsImages: true,
+						supportsComputerUse: true,
 					},
 				}
 			}
