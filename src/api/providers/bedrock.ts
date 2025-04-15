@@ -163,6 +163,10 @@ export class AwsBedrockHandler extends BaseProvider implements SingleCompletionH
 
 		const clientConfig: BedrockRuntimeClientConfig = {
 			region: this.options.awsRegion,
+			requestHandler: {
+				socketTimeout: 3600000, // 1 hour timeout for socket connections
+				timeoutInMillis: 3600000, // 1 hour timeout for requests
+			},
 		}
 
 		if (this.options.awsUseProfile && this.options.awsProfile) {

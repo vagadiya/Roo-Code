@@ -24,7 +24,7 @@ export const anthropicModels = {
 		thinking: true,
 	},
 	"claude-3-7-sonnet-20250219": {
-		maxTokens: 8192,
+		maxTokens: 64_000,
 		contextWindow: 200_000,
 		supportsImages: true,
 		supportsComputerUse: true,
@@ -162,7 +162,7 @@ export const bedrockModels = {
 		cachableFields: ["system"],
 	},
 	"anthropic.claude-3-7-sonnet-20250219-v1:0": {
-		maxTokens: 8192,
+		maxTokens: 64_000,
 		contextWindow: 200_000,
 		supportsImages: true,
 		supportsComputerUse: true,
