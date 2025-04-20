@@ -85,6 +85,11 @@ type ProviderSettings = {
 	awsProfile?: string | undefined
 	awsUseProfile?: boolean | undefined
 	awsCustomArn?: string | undefined
+	awsCustomArnSupportsImages?: boolean | undefined
+	awsCustomArnSupportsComputerUse?: boolean | undefined
+	awsCustomArnSupportsPromptCache?: boolean | undefined
+	awsCustomArnMaxTokenOutput?: number | undefined
+	awsCustomArnInputTokens?: number | undefined
 	vertexKeyFile?: string | undefined
 	vertexJsonCredentials?: string | undefined
 	vertexProjectId?: string | undefined

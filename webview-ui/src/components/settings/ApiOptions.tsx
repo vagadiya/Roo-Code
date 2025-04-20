@@ -47,7 +47,16 @@ import {
 	useOpenRouterModelProviders,
 	OPENROUTER_DEFAULT_PROVIDER_NAME,
 } from "@/components/ui/hooks/useOpenRouterModelProviders"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectSeparator, Button } from "@/components/ui"
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+	SelectSeparator,
+	Button,
+	Slider,
+} from "@/components/ui"
 import { MODELS_BY_PROVIDER, PROVIDERS, VERTEX_REGIONS, REASONING_MODELS } from "./constants"
 import { AWS_REGIONS } from "../../../../src/shared/aws_regions"
 import { VSCodeButtonLink } from "../common/VSCodeButtonLink"
@@ -1687,6 +1696,81 @@ const ApiOptions = ({
 
 									return null
 								})()}
+
+							<div className="mt-4">
+								<div className="font-medium mb-2">Model Capabilities</div>
+								<div className="flex flex-col gap-2">
+									<Checkbox
+										checked={apiConfiguration?.awsCustomArnSupportsImages ?? true}
+										onChange={(e: any) =>
+											setApiConfigurationField("awsCustomArnSupportsImages", e.target.checked)
+										}>
+										Supports Images
+									</Checkbox>
+									<Checkbox
+										checked={apiConfiguration?.awsCustomArnSupportsComputerUse ?? true}
+										onChange={(e: any) =>
+											setApiConfigurationField(
+												"awsCustomArnSupportsComputerUse",
+												e.target.checked,
+											)
+										}>
+										Supports Computer Use
+									</Checkbox>
+									<Checkbox
+										checked={apiConfiguration?.awsCustomArnSupportsPromptCache ?? false}
+										onChange={(e: any) =>
+											setApiConfigurationField(
+												"awsCustomArnSupportsPromptCache",
+												e.target.checked,
+											)
+										}>
+										Supports Prompt Caching
+									</Checkbox>
+								</div>
+							</div>
+
+							<div className="mt-4">
+								<div className="font-medium mb-2">Max Token Output</div>
+								<div className="flex items-center gap-2">
+									<Slider
+										min={5_000}
+										max={128_000}
+										step={1000}
+										value={[apiConfiguration?.awsCustomArnMaxTokenOutput ?? 5_000]}
+										onValueChange={([value]) =>
+											setApiConfigurationField("awsCustomArnMaxTokenOutput", value)
+										}
+									/>
+									<span className="w-20">
+										{(apiConfiguration?.awsCustomArnMaxTokenOutput ?? 5_000).toLocaleString()}
+									</span>
+								</div>
+								<div className="text-vscode-descriptionForeground text-sm mt-1">
+									Maximum number of tokens the model can generate in a single response.
+								</div>
+							</div>
+
+							<div className="mt-4">
+								<div className="font-medium mb-2">Input Tokens</div>
+								<div className="flex items-center gap-2">
+									<Slider
+										min={128_000}
+										max={2_000_000}
+										step={2_000}
+										value={[apiConfiguration?.awsCustomArnInputTokens ?? 128_000]}
+										onValueChange={([value]) =>
+											setApiConfigurationField("awsCustomArnInputTokens", value)
+										}
+									/>
+									<span className="w-20">
+										{(apiConfiguration?.awsCustomArnInputTokens ?? 128_000).toLocaleString()}
+									</span>
+								</div>
+								<div className="text-vscode-descriptionForeground text-sm mt-1">
+									Maximum number of tokens the model can accept as input.
+								</div>
+							</div>
 						</>
 					)}
 
@@ -1766,10 +1850,11 @@ export function normalizeApiConfiguration(apiConfiguration?: ApiConfiguration) {
 					selectedProvider: provider,
 					selectedModelId: "custom-arn",
 					selectedModelInfo: {
-						maxTokens: 5000,
-						contextWindow: 128_000,
-						supportsPromptCache: false,
-						supportsImages: true,
+						maxTokens: apiConfiguration?.awsCustomArnMaxTokenOutput ?? 8_000,
+						contextWindow: apiConfiguration?.awsCustomArnInputTokens ?? 128_000,
+						supportsPromptCache: apiConfiguration?.awsCustomArnSupportsPromptCache ?? false,
+						supportsImages: apiConfiguration?.awsCustomArnSupportsImages ?? true,
+						supportsComputerUse: apiConfiguration?.awsCustomArnSupportsComputerUse ?? true,
 					},
 				}
 			}

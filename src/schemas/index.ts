@@ -330,6 +330,12 @@ export const providerSettingsSchema = z.object({
 	awsProfile: z.string().optional(),
 	awsUseProfile: z.boolean().optional(),
 	awsCustomArn: z.string().optional(),
+	// Bedrock custom ARN settings
+	awsCustomArnSupportsImages: z.boolean().optional(),
+	awsCustomArnSupportsComputerUse: z.boolean().optional(),
+	awsCustomArnSupportsPromptCache: z.boolean().optional(),
+	awsCustomArnMaxTokenOutput: z.number().optional(),
+	awsCustomArnInputTokens: z.number().optional(),
 	// Google Vertex
 	vertexKeyFile: z.string().optional(),
 	vertexJsonCredentials: z.string().optional(),
@@ -431,6 +437,12 @@ const providerSettingsRecord: ProviderSettingsRecord = {
 	awsProfile: undefined,
 	awsUseProfile: undefined,
 	awsCustomArn: undefined,
+	// Bedrock custom ARN settings
+	awsCustomArnSupportsImages: undefined,
+	awsCustomArnSupportsComputerUse: undefined,
+	awsCustomArnSupportsPromptCache: undefined,
+	awsCustomArnMaxTokenOutput: undefined,
+	awsCustomArnInputTokens: undefined,
 	// Google Vertex
 	vertexKeyFile: undefined,
 	vertexJsonCredentials: undefined,
