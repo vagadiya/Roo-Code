@@ -288,13 +288,21 @@ const ApiOptions = ({
 	useEvent("message", onMessage)
 
 	const selectedProviderModelOptions = useMemo(
-		() =>
-			MODELS_BY_PROVIDER[selectedProvider]
+		() => {
+			// If the selected provider is Bedrock, return an empty array
+			// (we'll add the "Use custom ARN..." option separately in the render)
+			if (selectedProvider === "bedrock") {
+				return [];
+			}
+
+			// For other providers, continue with the existing logic
+			return MODELS_BY_PROVIDER[selectedProvider]
 				? Object.keys(MODELS_BY_PROVIDER[selectedProvider]).map((modelId) => ({
 						value: modelId,
 						label: modelId,
 					}))
-				: [],
+				: [];
+		},
 		[selectedProvider],
 	)
 
@@ -1738,7 +1746,7 @@ const ApiOptions = ({
 				/>
 			)}
 
-			{selectedProviderModelOptions.length > 0 && (
+			{(selectedProviderModelOptions.length > 0 || selectedProvider === "bedrock") && (
 				<>
 					<div>
 						<label className="block font-medium mb-1">{t("settings:providers.model")}</label>
