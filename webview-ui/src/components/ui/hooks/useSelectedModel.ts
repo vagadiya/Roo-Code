@@ -87,7 +87,20 @@ function getSelectedModelInfo({
 		case "bedrock":
 			// Special case for custom ARN.
 			if (id === "custom-arn") {
-				return { maxTokens: 5000, contextWindow: 128_000, supportsPromptCache: false, supportsImages: true }
+				return {
+					maxTokens: 32_000,
+					contextWindow: 200_000,
+					supportsImages: true,
+					supportsComputerUse: true,
+					supportsPromptCache: true,
+					inputPrice: 3.0,
+					outputPrice: 15.0,
+					cacheWritesPrice: 3.75,
+					cacheReadsPrice: 0.3,
+					minTokensPerCachePoint: 1024,
+					maxCachePoints: 4,
+					cachableFields: ["system", "messages", "tools"],
+				}
 			}
 
 			return bedrockModels[id as keyof typeof bedrockModels] ?? bedrockModels[bedrockDefaultModelId]
