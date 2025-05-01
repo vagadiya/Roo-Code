@@ -1,16 +1,16 @@
 import * as vscode from "vscode"
-import * as dotenvx from "@dotenvx/dotenvx"
-import * as path from "path"
+// import * as dotenvx from "@dotenvx/dotenvx"
+// import * as path from "path"
 
 // Load environment variables from .env file
-try {
-	// Specify path to .env file in the project root directory
-	const envPath = path.join(__dirname, "..", ".env")
-	dotenvx.config({ path: envPath })
-} catch (e) {
-	// Silently handle environment loading errors
-	console.warn("Failed to load environment variables:", e)
-}
+// try {
+// 	// Specify path to .env file in the project root directory
+// 	const envPath = path.join(__dirname, "..", ".env")
+// 	dotenvx.config({ path: envPath })
+// } catch (e) {
+// 	// Silently handle environment loading errors
+// 	console.warn("Failed to load environment variables:", e)
+// }
 
 import "./utils/path" // Necessary to have access to String.prototype.toPosix.
 
