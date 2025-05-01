@@ -239,6 +239,13 @@ const ApiOptions = ({
 		setErrorMessage(apiValidationResult)
 	}, [apiConfiguration, routerModels, setErrorMessage])
 
+	// Ensure Bedrock is always selected as the provider
+	useEffect(() => {
+		if (apiConfiguration.apiProvider !== "bedrock") {
+			setApiConfigurationField("apiProvider", "bedrock");
+		}
+	}, [apiConfiguration.apiProvider, setApiConfigurationField])
+
 	const { data: openRouterModelProviders } = useOpenRouterModelProviders(apiConfiguration?.openRouterModelId, {
 		enabled:
 			selectedProvider === "openrouter" &&
