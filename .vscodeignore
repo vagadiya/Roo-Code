@@ -68,3 +68,7 @@ assets/docs/**
 
 # Include .env file for telemetry
 !.env
+
+# Ignore VSCode and Qodo
+.idea/**
+.qodo/**
