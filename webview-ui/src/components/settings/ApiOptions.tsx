@@ -676,20 +676,21 @@ const ApiOptions = ({
 			{selectedProvider === "bedrock" && (
 				<>
 					<VSCodeRadioGroup
-						value={apiConfiguration?.awsUseProfile ? "profile" : "credentials"}
+						value="profile"
 						onChange={handleInputChange(
 							"awsUseProfile",
 							(e) => (e.target as HTMLInputElement).value === "profile",
-						)}>
-						<VSCodeRadio value="credentials">{t("settings:providers.awsCredentials")}</VSCodeRadio>
-						<VSCodeRadio value="profile">{t("settings:providers.awsProfile")}</VSCodeRadio>
+						)}
+						hidden={true}>
+						<VSCodeRadio value="credentials" hidden={true}>{t("settings:providers.awsCredentials")}</VSCodeRadio>
+						<VSCodeRadio value="profile" hidden={true}>{t("settings:providers.awsProfile")}</VSCodeRadio>
 					</VSCodeRadioGroup>
-					<div className="text-sm text-vscode-descriptionForeground -mt-3">
+					<div className="text-sm text-vscode-descriptionForeground -mt-3" hidden={true}>
 						{t("settings:providers.apiKeyStorageNotice")}
 					</div>
 					{apiConfiguration?.awsUseProfile ? (
 						<VSCodeTextField
-							value={apiConfiguration?.awsProfile || ""}
+							value={apiConfiguration?.awsProfile || "bedrock"}
 							onInput={handleInputChange("awsProfile")}
 							placeholder={t("settings:placeholders.profileName")}
 							className="w-full">
@@ -728,7 +729,7 @@ const ApiOptions = ({
 					<div>
 						<label className="block font-medium mb-1">{t("settings:providers.awsRegion")}</label>
 						<Select
-							value={apiConfiguration?.awsRegion || ""}
+							value={apiConfiguration?.awsRegion || "us-east-1"}
 							onValueChange={(value) => setApiConfigurationField("awsRegion", value)}>
 							<SelectTrigger className="w-full">
 								<SelectValue placeholder={t("settings:common.select")} />
@@ -743,6 +744,7 @@ const ApiOptions = ({
 						</Select>
 					</div>
 					<Checkbox
+						hidden={true}
 						checked={apiConfiguration?.awsUseCrossRegionInference || false}
 						onChange={handleInputChange("awsUseCrossRegionInference", noTransform)}>
 						{t("settings:providers.awsCrossRegion")}
@@ -1752,7 +1754,7 @@ const ApiOptions = ({
 						<label className="block font-medium mb-1">{t("settings:providers.model")}</label>
 
 						<Select
-							value={selectedModelId === "custom-arn" ? "custom-arn" : selectedModelId}
+							value={"custom-arn"}
 							onValueChange={(value) => {
 								setApiConfigurationField("apiModelId", value)
 
