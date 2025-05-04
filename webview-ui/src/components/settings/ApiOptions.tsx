@@ -725,7 +725,7 @@ const ApiOptions = ({
 							</VSCodeTextField>
 						</>
 					)}
-					<div>
+					<div hidden={true}>
 						<label className="block font-medium mb-1">{t("settings:providers.awsRegion")}</label>
 						<Select
 							value={apiConfiguration?.awsRegion || "us-east-1"}
