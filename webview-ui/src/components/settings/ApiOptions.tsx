@@ -688,15 +688,14 @@ const ApiOptions = ({
 					<div className="text-sm text-vscode-descriptionForeground -mt-3" hidden={true}>
 						{t("settings:providers.apiKeyStorageNotice")}
 					</div>
-					{apiConfiguration?.awsUseProfile ? (
-						<VSCodeTextField
-							value={apiConfiguration?.awsProfile || "bedrock"}
-							onInput={handleInputChange("awsProfile")}
-							placeholder={t("settings:placeholders.profileName")}
-							className="w-full">
-							<label className="block font-medium mb-1">{t("settings:providers.awsProfileName")}</label>
-						</VSCodeTextField>
-					) : (
+					<VSCodeTextField
+						value={apiConfiguration?.awsProfile || "bedrock"}
+						onInput={handleInputChange("awsProfile")}
+						placeholder={t("settings:placeholders.profileName")}
+						className="w-full">
+						<label className="block font-medium mb-1">{t("settings:providers.awsProfileName")}</label>
+					</VSCodeTextField>
+					{apiConfiguration?.awsUseProfile ? null : (
 						<>
 							<VSCodeTextField
 								value={apiConfiguration?.awsAccessKey || ""}
@@ -1779,7 +1778,7 @@ const ApiOptions = ({
 						</Select>
 					</div>
 
-					{selectedProvider === "bedrock" && selectedModelId === "custom-arn" && (
+					{selectedProvider === "bedrock" && (
 						<>
 							<VSCodeTextField
 								value={apiConfiguration?.awsCustomArn || ""}
