@@ -1749,7 +1749,7 @@ const ApiOptions = ({
 
 			{(selectedProviderModelOptions.length > 0 || selectedProvider === "bedrock") && (
 				<>
-					<div>
+					<div hidden={true}>
 						<label className="block font-medium mb-1">{t("settings:providers.model")}</label>
 
 						<Select
