@@ -36,6 +36,17 @@ const BEDROCK_MAX_TOKENS = 4096
  *
  *************************************************************************************/
 
+/**
+ * Interface for Bedrock API metrics to be logged
+ */
+export interface BedrockAPIMetrics {
+	latencyMs: number;
+	inputTokens: number;
+	outputTokens: number;
+	cacheReadTokens: number;
+	cacheWriteTokens: number;
+}
+
 // Define interface for Bedrock inference config
 interface BedrockInferenceConfig {
 	maxTokens: number
@@ -276,6 +287,18 @@ export class AwsBedrockHandler extends BaseProvider implements SingleCompletionH
 						cacheReadTokens: cacheReadTokens,
 						cacheWriteTokens: cacheWriteTokens,
 					}
+
+					// Update metrics
+					metrics.inputTokens = usage.inputTokens || 0;
+					metrics.outputTokens = usage.outputTokens || 0;
+					metrics.cacheReadTokens = cacheReadTokens;
+					metrics.cacheWriteTokens = cacheWriteTokens;
+					// If latency is provided in metadata, use it
+					if (streamEvent.metadata.metrics?.latencyMs) {
+						metrics.latencyMs = streamEvent.metadata.metrics.latencyMs;
+					}
+					this.logApiMetrics(metrics, modelConfig.id, "streamEvent.metadata.usage");
+
 					continue
 				}
 
@@ -309,6 +332,13 @@ export class AwsBedrockHandler extends BaseProvider implements SingleCompletionH
 								cacheReadTokens: cacheReadTokens,
 								cacheWriteTokens: cacheWriteTokens,
 							}
+
+							// Update metrics from router usage
+							metrics.inputTokens = routerUsage.inputTokens || 0;
+							metrics.outputTokens = routerUsage.outputTokens || 0;
+							metrics.cacheReadTokens = cacheReadTokens;
+							metrics.cacheWriteTokens = cacheWriteTokens;
+							this.logApiMetrics(metrics, modelConfig.id, "streamEvent.trace.promptRouter.usage");
 						}
 					} catch (error) {
 						logger.error("Error handling Bedrock invokedModelId", {
@@ -352,6 +382,12 @@ export class AwsBedrockHandler extends BaseProvider implements SingleCompletionH
 		} catch (error: unknown) {
 			// Clear timeout on error
 			clearTimeout(timeoutId)
+			
+			// Calculate latency on error
+			metrics.latencyMs = Date.now() - startTime;
+			
+			// Log metrics even on error
+			this.logApiMetrics(metrics, modelConfig.id, "streamError");
 
 			// Use the extracted error handling method for all errors
 			const errorChunks = this.handleBedrockError(error, true) // true for streaming context
@@ -402,6 +438,8 @@ export class AwsBedrockHandler extends BaseProvider implements SingleCompletionH
 			const command = new ConverseCommand(payload)
 			const response = await this.client.send(command)
 
+			this.logApiMetrics(metrics, modelConfig.id, "completePrompt");
+
 			if (
 				response?.output?.message?.content &&
 				response.output.message.content.length > 0 &&
@@ -419,6 +457,12 @@ export class AwsBedrockHandler extends BaseProvider implements SingleCompletionH
 			}
 			return ""
 		} catch (error) {
+			// Calculate latency on error
+			metrics.latencyMs = Date.now() - startTime;
+			
+			// Log metrics even on error
+			this.logApiMetrics(metrics, this.getModel().id, "completePrompt.Error");
+			
 			// Use the extracted error handling method for all errors
 			const errorResult = this.handleBedrockError(error, false) // false for non-streaming context
 			// Since we're in a non-streaming context, we know the result is a string
@@ -979,5 +1023,15 @@ Suggestions:
 			// For non-streaming context, add the expected prefix
 			return `Bedrock completion error: ${errorMessage}`
 		}
+	}
+
+	/**
+	 * Logs metrics from a Bedrock API call
+	 * @param metrics - The metrics to log
+	 * @param modelId - The ID of the model used
+	 * @param operation - The operation performed (stream, complete, etc.)
+	 */
+	private logApiMetrics(metrics: BedrockAPIMetrics, modelId: string, operation: string): void {
+		console.info(`Bedrock API call: time=${new Date().toISOString()}, modelId=${modelId}, operation=${operation}, latencyMs=${metrics.latencyMs}, inputTokens=${metrics.inputTokens}, outputTokens=${metrics.outputTokens}, cacheReadTokens=${metrics.cacheReadTokens}, cacheWriteTokens=${metrics.cacheWriteTokens}`);
 	}
 }
