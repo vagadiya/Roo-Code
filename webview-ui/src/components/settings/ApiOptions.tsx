@@ -191,11 +191,11 @@ const ApiOptions = ({
 	const { data: routerModels } = useRouterModels()
 
 	// Update apiConfiguration.aiModelId whenever selectedModelId changes.
-	useEffect(() => {
-		if (selectedModelId) {
-			setApiConfigurationField("apiModelId", selectedModelId)
-		}
-	}, [selectedModelId, setApiConfigurationField])
+	// useEffect(() => {
+	// 	if (selectedModelId) {
+	// 		setApiConfigurationField("apiModelId", selectedModelId)
+	// 	}
+	// }, [selectedModelId, setApiConfigurationField])
 
 	// Debounced refresh model updates, only executed 250ms after the user
 	// stops typing.
@@ -233,9 +233,129 @@ const ApiOptions = ({
 		],
 	)
 
+	// Ensure Bedrock is always selected as the provider
+	useEffect(() => {
+		if (apiConfiguration.apiProvider !== "bedrock") {
+			setApiConfigurationField("apiProvider", "bedrock");
+		}
+	}, [apiConfiguration.apiProvider, setApiConfigurationField])
+
+	// Ensure awsUseProfile defaults to true and event is fired on mount
+	useEffect(() => {
+		if (!apiConfiguration?.awsUseProfile) {
+			setApiConfigurationField("awsUseProfile", true);
+		}
+	}, [apiConfiguration.awsUseProfile, setApiConfigurationField])
+
+	// Ensure awsProfile defaults to 'bedrock' and event is fired on mount
+	useEffect(() => {
+		if (!apiConfiguration?.awsProfile) {
+			setApiConfigurationField("awsProfile", "bedrock");
+		}
+	}, [apiConfiguration.awsProfile, setApiConfigurationField])
+
+	// Ensure awsRegion defaults to 'us-east-1' and event is fired on mount
+	useEffect(() => {
+		if (!apiConfiguration?.awsRegion) {
+			setApiConfigurationField("awsRegion", "us-east-1");
+		}
+	}, [apiConfiguration.awsRegion, setApiConfigurationField])
+
+	// Ensure awsUsePromptCache defaults to true and event is fired on mount
+	// useEffect(() => {
+	// 	if (!apiConfiguration?.awsUsePromptCache) {
+	// 		setApiConfigurationField("awsUsePromptCache", true);
+	// 	}
+	// }, [apiConfiguration.awsUsePromptCache, setApiConfigurationField])
+
+	// Ensure awsCustomArnInputContextTokens defaults to 200_000 and event is fired on mount
+	useEffect(() => {
+		if (!apiConfiguration?.awsCustomArnInputContextTokens) {
+			setApiConfigurationField("awsCustomArnInputContextTokens", 200_000);
+		}
+	}, [apiConfiguration.awsCustomArnInputContextTokens, setApiConfigurationField])
+
+	// Ensure awsCustomArnMaxOutputTokens defaults to 8192 and event is fired on mount
+	useEffect(() => {
+		if (!apiConfiguration?.awsCustomArnMaxOutputTokens) {
+			setApiConfigurationField("awsCustomArnMaxOutputTokens", 8192);
+		}
+	}, [apiConfiguration.awsCustomArnMaxOutputTokens, setApiConfigurationField])
+
+	// Ensure awsCustomArnSupportsImages defaults to true and event is fired on mount
+	// useEffect(() => {
+	// 	if (!apiConfiguration?.awsCustomArnSupportsImages) {
+	// 		setApiConfigurationField("awsCustomArnSupportsImages", true);
+	// 	}
+	// }, [apiConfiguration.awsCustomArnSupportsImages, setApiConfigurationField])
+
+	// Ensure awsCustomArnSupportsComputerUse defaults to true and event is fired on mount
+	// useEffect(() => {
+	// 	if (!apiConfiguration?.awsCustomArnSupportsComputerUse) {
+	// 		setApiConfigurationField("awsCustomArnSupportsComputerUse", true);
+	// 	}
+	// }, [apiConfiguration.awsCustomArnSupportsComputerUse, setApiConfigurationField])
+
+	// Ensure awsCustomArnSupportsPromptCaching defaults to true and event is fired on mount
+	// useEffect(() => {
+	// 	if (!apiConfiguration?.awsCustomArnSupportsPromptCaching) {
+	// 		setApiConfigurationField("awsCustomArnSupportsPromptCaching", true);
+	// 	}
+	// }, [apiConfiguration.awsCustomArnSupportsPromptCaching, setApiConfigurationField])
+
+	// Ensure awsCustomArnInputPrice defaults to 3 and event is fired on mount
+	useEffect(() => {
+		if (!apiConfiguration?.awsCustomArnInputPrice) {
+			setApiConfigurationField("awsCustomArnInputPrice", 3);
+		}
+	}, [apiConfiguration.awsCustomArnInputPrice, setApiConfigurationField])
+
+	// Ensure awsCustomArnOutputPrice defaults to 15 and event is fired on mount
+	useEffect(() => {
+		if (!apiConfiguration?.awsCustomArnOutputPrice) {
+			setApiConfigurationField("awsCustomArnOutputPrice", 15);
+		}
+	}, [apiConfiguration.awsCustomArnOutputPrice, setApiConfigurationField])
+
+	// Ensure awsCustomArnCacheWritesPrice defaults to 3.75 and event is fired on mount
+	useEffect(() => {
+		if (!apiConfiguration?.awsCustomArnCacheWritesPrice) {
+			setApiConfigurationField("awsCustomArnCacheWritesPrice", 3.75);
+		}
+	}, [apiConfiguration.awsCustomArnCacheWritesPrice, setApiConfigurationField])
+
+	// Ensure awsCustomArnCacheReadsPrice defaults to 0.3 and event is fired on mount
+	useEffect(() => {
+		if (!apiConfiguration?.awsCustomArnCacheReadsPrice) {
+			setApiConfigurationField("awsCustomArnCacheReadsPrice", 0.3);
+		}
+	}, [apiConfiguration.awsCustomArnCacheReadsPrice, setApiConfigurationField])
+
+	// Ensure awsCustomArnMinTokensPerCachePoint defaults to 1024 and event is fired on mount
+	useEffect(() => {
+		if (!apiConfiguration?.awsCustomArnMinTokensPerCachePoint) {
+			setApiConfigurationField("awsCustomArnMinTokensPerCachePoint", 1024);
+		}
+	}, [apiConfiguration.awsCustomArnMinTokensPerCachePoint, setApiConfigurationField])
+
+	// Ensure awsCustomArnMaxCachePoints defaults to 4 and event is fired on mount
+	useEffect(() => {
+		if (!apiConfiguration?.awsCustomArnMaxCachePoints) {
+			setApiConfigurationField("awsCustomArnMaxCachePoints", 4);
+		}
+	}, [apiConfiguration.awsCustomArnMaxCachePoints, setApiConfigurationField])
+
+	// Ensure awsCustomArnCachableFields defaults to ["system", "messages", "tools"] and event is fired on mount
+	useEffect(() => {
+		if (!apiConfiguration?.awsCustomArnCachableFields) {
+			setApiConfigurationField("awsCustomArnCachableFields", "system, messages, tools");
+		}
+	}, [apiConfiguration.awsCustomArnCachableFields, setApiConfigurationField])
+
 	useEffect(() => {
 		const apiValidationResult =
 			validateApiConfiguration(apiConfiguration) || validateModelId(apiConfiguration, routerModels)
+		console.log("apiValidationResult", apiValidationResult)
 		setErrorMessage(apiValidationResult)
 	}, [apiConfiguration, routerModels, setErrorMessage])
 
@@ -281,13 +401,21 @@ const ApiOptions = ({
 	useEvent("message", onMessage)
 
 	const selectedProviderModelOptions = useMemo(
-		() =>
-			MODELS_BY_PROVIDER[selectedProvider]
+		() => {
+			// If the selected provider is Bedrock, return an empty array
+			// (we'll add the "Use custom ARN..." option separately in the render)
+			if (selectedProvider === "bedrock") {
+				return [];
+			}
+
+			// For other providers, continue with the existing logic
+			return MODELS_BY_PROVIDER[selectedProvider]
 				? Object.keys(MODELS_BY_PROVIDER[selectedProvider]).map((modelId) => ({
 						value: modelId,
 						label: modelId,
 					}))
-				: [],
+				: [];
+		},
 		[selectedProvider],
 	)
 
@@ -368,15 +496,16 @@ const ApiOptions = ({
 
 	return (
 		<div className="flex flex-col gap-3">
-			<div className="flex flex-col gap-1 relative">
+			<div className="flex flex-col gap-1 relative" hidden={true}>
 				<div className="flex justify-between items-center">
 					<label className="block font-medium mb-1">{t("settings:providers.apiProvider")}</label>
 					{getSelectedProviderDocUrl() && (
 						<div className="text-xs text-vscode-descriptionForeground">
 							<VSCodeLink
-								href={getSelectedProviderDocUrl()!.url}
-								className="hover:text-vscode-foreground"
-								target="_blank">
+                                href={getSelectedProviderDocUrl()!.url}
+                                className="hover:text-vscode-foreground"
+                                target="_blank"
+                                style={selectedProvider === "bedrock" ? { display: "none" } : {}}>
 								{t("settings:providers.providerDocumentation", {
 									provider: getSelectedProviderDocUrl()!.name,
 								})}
@@ -661,26 +790,26 @@ const ApiOptions = ({
 			{selectedProvider === "bedrock" && (
 				<>
 					<VSCodeRadioGroup
-						value={apiConfiguration?.awsUseProfile ? "profile" : "credentials"}
+						value="profile"
 						onChange={handleInputChange(
 							"awsUseProfile",
 							(e) => (e.target as HTMLInputElement).value === "profile",
-						)}>
-						<VSCodeRadio value="credentials">{t("settings:providers.awsCredentials")}</VSCodeRadio>
-						<VSCodeRadio value="profile">{t("settings:providers.awsProfile")}</VSCodeRadio>
+						)}
+						hidden={true}>
+						<VSCodeRadio value="credentials" hidden={true}>{t("settings:providers.awsCredentials")}</VSCodeRadio>
+						<VSCodeRadio value="profile" hidden={true}>{t("settings:providers.awsProfile")}</VSCodeRadio>
 					</VSCodeRadioGroup>
-					<div className="text-sm text-vscode-descriptionForeground -mt-3">
+					<div className="text-sm text-vscode-descriptionForeground -mt-3" hidden={true}>
 						{t("settings:providers.apiKeyStorageNotice")}
 					</div>
-					{apiConfiguration?.awsUseProfile ? (
-						<VSCodeTextField
-							value={apiConfiguration?.awsProfile || ""}
-							onInput={handleInputChange("awsProfile")}
-							placeholder={t("settings:placeholders.profileName")}
-							className="w-full">
-							<label className="block font-medium mb-1">{t("settings:providers.awsProfileName")}</label>
-						</VSCodeTextField>
-					) : (
+					<VSCodeTextField
+						value={apiConfiguration?.awsProfile || "bedrock"}
+						onInput={handleInputChange("awsProfile")}
+						placeholder={t("settings:placeholders.profileName")}
+						className="w-full">
+						<label className="block font-medium mb-1">{t("settings:providers.awsProfileName")}</label>
+					</VSCodeTextField>
+					{apiConfiguration?.awsUseProfile ? null : (
 						<>
 							<VSCodeTextField
 								value={apiConfiguration?.awsAccessKey || ""}
@@ -710,10 +839,10 @@ const ApiOptions = ({
 							</VSCodeTextField>
 						</>
 					)}
-					<div>
+					<div hidden={true}>
 						<label className="block font-medium mb-1">{t("settings:providers.awsRegion")}</label>
 						<Select
-							value={apiConfiguration?.awsRegion || ""}
+							value={apiConfiguration?.awsRegion || "us-east-1"}
 							onValueChange={(value) => setApiConfigurationField("awsRegion", value)}>
 							<SelectTrigger className="w-full">
 								<SelectValue placeholder={t("settings:common.select")} />
@@ -732,21 +861,19 @@ const ApiOptions = ({
 						onChange={handleInputChange("awsUseCrossRegionInference", noTransform)}>
 						{t("settings:providers.awsCrossRegion")}
 					</Checkbox>
-					{selectedModelInfo?.supportsPromptCache && (
-						<Checkbox
-							checked={apiConfiguration?.awsUsePromptCache || false}
-							onChange={handleInputChange("awsUsePromptCache", noTransform)}>
-							<div className="flex items-center gap-1">
-								<span>{t("settings:providers.enablePromptCaching")}</span>
-								<i
-									className="codicon codicon-info text-vscode-descriptionForeground"
-									title={t("settings:providers.enablePromptCachingTitle")}
-									style={{ fontSize: "12px" }}
-								/>
-							</div>
-						</Checkbox>
-					)}
-					<div>
+					<Checkbox
+						checked={apiConfiguration?.awsUsePromptCache || false}
+						onChange={handleInputChange("awsUsePromptCache", noTransform)}>
+						<div className="flex items-center gap-1">
+							<span>{t("settings:providers.enablePromptCaching")}</span>
+							<i
+								className="codicon codicon-info text-vscode-descriptionForeground"
+								title={t("settings:providers.enablePromptCachingTitle")}
+								style={{ fontSize: "12px" }}
+							/>
+						</div>
+					</Checkbox>
+					<div hidden={true}>
 						<div className="text-sm text-vscode-descriptionForeground ml-6 mt-1">
 							{t("settings:providers.cacheUsageNote")}
 						</div>
@@ -1731,13 +1858,13 @@ const ApiOptions = ({
 				/>
 			)}
 
-			{selectedProviderModelOptions.length > 0 && (
+			{(selectedProviderModelOptions.length > 0 || selectedProvider === "bedrock") && (
 				<>
-					<div>
+					<div hidden={true}>
 						<label className="block font-medium mb-1">{t("settings:providers.model")}</label>
 
 						<Select
-							value={selectedModelId === "custom-arn" ? "custom-arn" : selectedModelId}
+							value={"custom-arn"}
 							onValueChange={(value) => {
 								setApiConfigurationField("apiModelId", value)
 
@@ -1762,7 +1889,7 @@ const ApiOptions = ({
 						</Select>
 					</div>
 
-					{selectedProvider === "bedrock" && selectedModelId === "custom-arn" && (
+					{selectedProvider === "bedrock" && (
 						<>
 							<VSCodeTextField
 								value={apiConfiguration?.awsCustomArn || ""}
@@ -1774,7 +1901,153 @@ const ApiOptions = ({
 								className="w-full">
 								<label className="block font-medium mb-1">{t("settings:labels.customArn")}</label>
 							</VSCodeTextField>
-							<div className="text-sm text-vscode-descriptionForeground -mt-2">
+
+							{/* Custom ARN Configuration Fields */}
+							
+							<div className="flex flex-col space-y-4 mt-4">
+								{/* Token Limits */}
+								<div className="flex flex-col space-y-2">
+									<label className="block font-medium mb-1">
+										Input Context Tokens
+									</label>
+									<div className="flex items-center space-x-2">
+										<input
+											type="range"
+											min={128000}
+											max={200000}
+											step={1000}
+											value={apiConfiguration?.awsCustomArnInputContextTokens || 128000}
+											onChange={(e) => setApiConfigurationField("awsCustomArnInputContextTokens", parseInt(e.target.value))}
+											className="w-full"
+										/>
+										<span className="text-sm">
+											{(apiConfiguration?.awsCustomArnInputContextTokens || 128000).toLocaleString()}
+										</span>
+									</div>
+								</div>
+
+								<div className="flex flex-col space-y-2">
+									<label className="block font-medium mb-1">
+										Max Output Tokens
+									</label>
+									<div className="flex items-center space-x-2">
+										<input
+											type="range"
+											min={8192}
+											max={64000}
+											step={512}
+											value={apiConfiguration?.awsCustomArnMaxOutputTokens || 8192}
+											onChange={(e) => setApiConfigurationField("awsCustomArnMaxOutputTokens", parseInt(e.target.value))}
+											className="w-full"
+										/>
+										<span className="text-sm">
+											{(apiConfiguration?.awsCustomArnMaxOutputTokens || 8192).toLocaleString()}
+										</span>
+									</div>
+								</div>
+
+								{/* Feature Support Checkboxes */}
+								<div className="flex flex-col space-y-2">
+									<label className="block font-medium mb-1">
+										Model Features
+									</label>
+									<div className="flex flex-col space-y-2">
+										<div className="flex items-center space-x-2">
+											<Checkbox 
+												checked={apiConfiguration?.awsCustomArnSupportsImages || false}
+											onChange={(e) => setApiConfigurationField("awsCustomArnSupportsImages", e)}
+											/>
+											<span>Supports Images</span>
+										</div>
+										<div className="flex items-center space-x-2">
+											<Checkbox 
+												checked={apiConfiguration?.awsCustomArnSupportsComputerUse || false}
+												onChange={(e) => setApiConfigurationField("awsCustomArnSupportsComputerUse", e)}
+											/>
+											<span>Supports Computer Use</span>
+										</div>
+										<div className="flex items-center space-x-2">
+											<Checkbox 
+												checked={apiConfiguration?.awsCustomArnSupportsPromptCaching || false}
+												onChange={(e) => setApiConfigurationField("awsCustomArnSupportsPromptCaching", e)}
+											/>
+											<span>Supports Prompt Caching</span>
+										</div>
+									</div>
+								</div>
+
+								{/* Model Costs */}
+								<div className="flex flex-col space-y-2 mt-2">
+									<label className="block font-medium mb-1">
+										Model Costs (defaults for Claude 3.7 Sonnet)
+									</label>
+									
+									<VSCodeTextField
+										value={apiConfiguration?.awsCustomArnInputPrice?.toString() || "3.00"}
+										onChange={(e) => setApiConfigurationField("awsCustomArnInputPrice", parseFloat((e.target as HTMLInputElement).value || "") || 0)}
+										placeholder="3.00"
+										className="w-full">
+										<label className="block font-medium mb-1">Input Price ($/million tokens)</label>
+									</VSCodeTextField>
+									
+									<VSCodeTextField
+										value={apiConfiguration?.awsCustomArnOutputPrice?.toString() || "15.00"}
+										onChange={(e) => setApiConfigurationField("awsCustomArnOutputPrice", parseFloat((e.target as HTMLInputElement).value) || 0)}
+										placeholder="15.00"
+										className="w-full">
+										<label className="block font-medium mb-1">Output Price ($/million tokens)</label>
+									</VSCodeTextField>
+									
+									<VSCodeTextField
+										value={apiConfiguration?.awsCustomArnCacheWritesPrice?.toString() || "3.75"}
+										onChange={(e) => setApiConfigurationField("awsCustomArnCacheWritesPrice", parseFloat((e.target as HTMLInputElement).value) || 0)}
+										placeholder="3.75"
+										className="w-full">
+										<label className="block font-medium mb-1">Cache Writes Price ($/million tokens)</label>
+									</VSCodeTextField>
+									
+									<VSCodeTextField
+										value={apiConfiguration?.awsCustomArnCacheReadsPrice?.toString() || "0.30"}
+										onChange={(e) => setApiConfigurationField("awsCustomArnCacheReadsPrice", parseFloat((e.target as HTMLInputElement).value) || 0)}
+										placeholder="0.30"
+										className="w-full">
+										<label className="block font-medium mb-1">Cache Reads Price ($/million tokens)</label>
+									</VSCodeTextField>
+								</div>
+
+								{/* Cache Configuration */}
+								<div className="flex flex-col space-y-2 mt-2">
+									<label className="block font-medium mb-1">
+										Cache Configuration
+									</label>
+									
+									<VSCodeTextField
+										value={apiConfiguration?.awsCustomArnMinTokensPerCachePoint?.toString() || "1024"}
+										onChange={(e) => setApiConfigurationField("awsCustomArnMinTokensPerCachePoint", parseInt((e.target as HTMLInputElement).value) || 0)}
+										placeholder="1024"
+										className="w-full">
+										<label className="block font-medium mb-1">Min Tokens Per Cache Point</label>
+									</VSCodeTextField>
+									
+									<VSCodeTextField
+										value={apiConfiguration?.awsCustomArnMaxCachePoints?.toString() || "4"}
+										onChange={(e) => setApiConfigurationField("awsCustomArnMaxCachePoints", parseInt((e.target as HTMLInputElement).value) || 0)}
+										placeholder="4"
+										className="w-full">
+										<label className="block font-medium mb-1">Max Cache Points</label>
+									</VSCodeTextField>
+									
+									<VSCodeTextField
+										value={apiConfiguration?.awsCustomArnCachableFields || "system,messages,tools"}
+										onChange={(e) => setApiConfigurationField("awsCustomArnCachableFields", (e.target as HTMLInputElement).value)}
+										placeholder="system,messages,tools"
+										className="w-full">
+										<label className="block font-medium mb-1">Cachable Fields (comma-separated)</label>
+									</VSCodeTextField>
+								</div>
+							</div>
+
+							<div hidden={true} className="text-sm text-vscode-descriptionForeground -mt-2">
 								{t("settings:providers.awsCustomArnUse")}
 								<ul className="list-disc pl-5 mt-1">
 									<li>
@@ -1798,7 +2071,7 @@ const ApiOptions = ({
 
 									if (!validation.isValid) {
 										return (
-											<div className="text-sm text-vscode-errorForeground mt-2">
+											<div hidden={true} className="text-sm text-vscode-errorForeground mt-2">
 												{validation.errorMessage || t("settings:providers.invalidArnFormat")}
 											</div>
 										)
@@ -1806,7 +2079,7 @@ const ApiOptions = ({
 
 									if (validation.errorMessage) {
 										return (
-											<div className="text-sm text-vscode-errorForeground mt-2">
+											<div hidden={true} className="text-sm text-vscode-errorForeground mt-2">
 												{validation.errorMessage}
 											</div>
 										)
@@ -1817,20 +2090,26 @@ const ApiOptions = ({
 						</>
 					)}
 
-					<ModelInfoView
-						apiProvider={selectedProvider}
-						selectedModelId={selectedModelId}
-						modelInfo={selectedModelInfo}
-						isDescriptionExpanded={isDescriptionExpanded}
-						setIsDescriptionExpanded={setIsDescriptionExpanded}
-					/>
-
-					<ThinkingBudget
-						key={`${selectedProvider}-${selectedModelId}`}
-						apiConfiguration={apiConfiguration}
-						setApiConfigurationField={setApiConfigurationField}
-						modelInfo={selectedModelInfo}
-					/>
+					{/* for now only show model info for non-bedrock providers */}
+					{selectedProvider !== "bedrock" && (
+						<ModelInfoView
+							apiProvider={selectedProvider}
+							selectedModelId={selectedModelId}
+							modelInfo={selectedModelInfo}
+							isDescriptionExpanded={isDescriptionExpanded}
+							setIsDescriptionExpanded={setIsDescriptionExpanded}
+						/>
+					)}
+					
+					{/* for now only show thinking budget for non-bedrock providers */}
+					{selectedProvider !== "bedrock" && (
+						<ThinkingBudget
+							key={`${selectedProvider}-${selectedModelId}`}
+							apiConfiguration={apiConfiguration}
+							setApiConfigurationField={setApiConfigurationField}
+							modelInfo={selectedModelInfo}
+						/>
+					)}
 				</>
 			)}
 
