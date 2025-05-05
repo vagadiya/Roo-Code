@@ -383,15 +383,16 @@ const ApiOptions = ({
 
 	return (
 		<div className="flex flex-col gap-3">
-			<div className="flex flex-col gap-1 relative">
+			<div className="flex flex-col gap-1 relative" style={{ display: "none" }}>
 				<div className="flex justify-between items-center">
 					<label className="block font-medium mb-1">{t("settings:providers.apiProvider")}</label>
 					{getSelectedProviderDocUrl() && (
 						<div className="text-xs text-vscode-descriptionForeground">
 							<VSCodeLink
-								href={getSelectedProviderDocUrl()!.url}
-								className="hover:text-vscode-foreground"
-								target="_blank">
+                                href={getSelectedProviderDocUrl()!.url}
+                                className="hover:text-vscode-foreground"
+                                target="_blank"
+                                style={selectedProvider === "bedrock" ? { display: "none" } : {}}>
 								{t("settings:providers.providerDocumentation", {
 									provider: getSelectedProviderDocUrl()!.name,
 								})}
@@ -725,7 +726,7 @@ const ApiOptions = ({
 							</VSCodeTextField>
 						</>
 					)}
-					<div hidden={true}>
+					<div style={{ display: "none" }}>
 						<label className="block font-medium mb-1">{t("settings:providers.awsRegion")}</label>
 						<Select
 							value={apiConfiguration?.awsRegion || "us-east-1"}
@@ -743,26 +744,23 @@ const ApiOptions = ({
 						</Select>
 					</div>
 					<Checkbox
-						hidden={true}
 						checked={apiConfiguration?.awsUseCrossRegionInference || false}
 						onChange={handleInputChange("awsUseCrossRegionInference", noTransform)}>
 						{t("settings:providers.awsCrossRegion")}
 					</Checkbox>
-					{apiConfiguration?.awsCustomArnSupportsPromptCaching && (
-						<Checkbox
-							checked={apiConfiguration?.awsUsePromptCache || false}
-							onChange={handleInputChange("awsUsePromptCache", noTransform)}>
-							<div className="flex items-center gap-1">
-								<span>{t("settings:providers.enablePromptCaching")}</span>
-								<i
-									className="codicon codicon-info text-vscode-descriptionForeground"
-									title={t("settings:providers.enablePromptCachingTitle")}
-									style={{ fontSize: "12px" }}
-								/>
-							</div>
-						</Checkbox>
-					)}
-					<div>
+					<Checkbox
+						checked={apiConfiguration?.awsUsePromptCache || false}
+						onChange={handleInputChange("awsUsePromptCache", noTransform)}>
+						<div className="flex items-center gap-1">
+							<span>{t("settings:providers.enablePromptCaching")}</span>
+							<i
+								className="codicon codicon-info text-vscode-descriptionForeground"
+								title={t("settings:providers.enablePromptCachingTitle")}
+								style={{ fontSize: "12px" }}
+							/>
+						</div>
+					</Checkbox>
+					<div style={{ display: "none" }}>
 						<div className="text-sm text-vscode-descriptionForeground ml-6 mt-1">
 							{t("settings:providers.cacheUsageNote")}
 						</div>
@@ -1749,7 +1747,7 @@ const ApiOptions = ({
 
 			{(selectedProviderModelOptions.length > 0 || selectedProvider === "bedrock") && (
 				<>
-					<div hidden={true}>
+					<div style={{ display: "none" }}>
 						<label className="block font-medium mb-1">{t("settings:providers.model")}</label>
 
 						<Select
@@ -1876,7 +1874,7 @@ const ApiOptions = ({
 										onChange={(e) => setApiConfigurationField("awsCustomArnInputPrice", parseFloat((e.target as HTMLInputElement).value || "") || 0)}
 										placeholder="3.00"
 										className="w-full">
-										<label className="block font-medium mb-1">Input Price (per million tokens)</label>
+										<label className="block font-medium mb-1">Input Price ($/million tokens)</label>
 									</VSCodeTextField>
 									
 									<VSCodeTextField
@@ -1884,7 +1882,7 @@ const ApiOptions = ({
 										onChange={(e) => setApiConfigurationField("awsCustomArnOutputPrice", parseFloat((e.target as HTMLInputElement).value) || 0)}
 										placeholder="15.00"
 										className="w-full">
-										<label className="block font-medium mb-1">Output Price (per million tokens)</label>
+										<label className="block font-medium mb-1">Output Price ($/million tokens)</label>
 									</VSCodeTextField>
 									
 									<VSCodeTextField
@@ -1892,7 +1890,7 @@ const ApiOptions = ({
 										onChange={(e) => setApiConfigurationField("awsCustomArnCacheWritesPrice", parseFloat((e.target as HTMLInputElement).value) || 0)}
 										placeholder="3.75"
 										className="w-full">
-										<label className="block font-medium mb-1">Cache Writes Price (per million tokens)</label>
+										<label className="block font-medium mb-1">Cache Writes Price ($/million tokens)</label>
 									</VSCodeTextField>
 									
 									<VSCodeTextField
@@ -1900,7 +1898,7 @@ const ApiOptions = ({
 										onChange={(e) => setApiConfigurationField("awsCustomArnCacheReadsPrice", parseFloat((e.target as HTMLInputElement).value) || 0)}
 										placeholder="0.30"
 										className="w-full">
-										<label className="block font-medium mb-1">Cache Reads Price (per million tokens)</label>
+										<label className="block font-medium mb-1">Cache Reads Price ($/million tokens)</label>
 									</VSCodeTextField>
 								</div>
 
