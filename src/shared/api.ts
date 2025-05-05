@@ -1459,3 +1459,12 @@ export const isRouterName = (value: string): value is RouterName => routerNames.
 export type ModelRecord = Record<string, ModelInfo>
 
 export type RouterModels = Record<RouterName, ModelRecord>
+
+export const APPROVED_BEDROCK_ARNS: string[] = [
+  "arn:aws:bedrock:us-east-1:344087272340:application-inference-profile/o4ztgzanj4u7",
+  "arn:aws:bedrock:us-east-1:344087272340:application-inference-profile/lnm56v9is2ym",
+  "arn:aws:bedrock:us-east-1:344087272340:application-inference-profile/rwwfypv8botg",
+  "arn:aws:bedrock:us-east-1:396913734285:application-inference-profile/7f9boiz9ouig",
+  "arn:aws:bedrock:us-east-1:396913734285:application-inference-profile/of8cznqafjnb",
+  "arn:aws:bedrock:us-east-1:396913734285:application-inference-profile/1cr3yg5f8l99",
+];
