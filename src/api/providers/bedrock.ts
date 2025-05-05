@@ -197,6 +197,15 @@ export class AwsBedrockHandler extends BaseProvider implements SingleCompletionH
 	}
 
 	override async *createMessage(systemPrompt: string, messages: Anthropic.Messages.MessageParam[]): ApiStream {
+		// Initialize metrics for tracking API usage
+		let metrics: BedrockAPIMetrics = {
+			latencyMs: 0,
+			inputTokens: 0,
+			outputTokens: 0,
+			cacheReadTokens: 0,
+			cacheWriteTokens: 0,
+		};
+		let startTime = Date.now()
 		let modelConfig = this.getModel()
 		// Handle cross-region inference
 		const usePromptCache = Boolean(this.options.awsUsePromptCache && this.supportsAwsPromptCache(modelConfig))
@@ -405,6 +414,15 @@ export class AwsBedrockHandler extends BaseProvider implements SingleCompletionH
 	}
 
 	async completePrompt(prompt: string): Promise<string> {
+		// Initialize metrics for tracking API usage
+		let metrics: BedrockAPIMetrics = {
+			latencyMs: 0,
+			inputTokens: 0,
+			outputTokens: 0,
+			cacheReadTokens: 0,
+			cacheWriteTokens: 0,
+		};
+		let startTime = Date.now()
 		try {
 			const modelConfig = this.getModel()
 
