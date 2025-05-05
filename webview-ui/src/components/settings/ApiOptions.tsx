@@ -748,7 +748,7 @@ const ApiOptions = ({
 						onChange={handleInputChange("awsUseCrossRegionInference", noTransform)}>
 						{t("settings:providers.awsCrossRegion")}
 					</Checkbox>
-					{selectedModelInfo?.supportsPromptCache && (
+					{apiConfiguration?.awsCustomArnSupportsPromptCaching && (
 						<Checkbox
 							checked={apiConfiguration?.awsUsePromptCache || false}
 							onChange={handleInputChange("awsUsePromptCache", noTransform)}>
@@ -1979,20 +1979,26 @@ const ApiOptions = ({
 						</>
 					)}
 
-					<ModelInfoView
-						apiProvider={selectedProvider}
-						selectedModelId={selectedModelId}
-						modelInfo={selectedModelInfo}
-						isDescriptionExpanded={isDescriptionExpanded}
-						setIsDescriptionExpanded={setIsDescriptionExpanded}
-					/>
-
-					<ThinkingBudget
-						key={`${selectedProvider}-${selectedModelId}`}
-						apiConfiguration={apiConfiguration}
-						setApiConfigurationField={setApiConfigurationField}
-						modelInfo={selectedModelInfo}
-					/>
+					{/* for now only show model info for non-bedrock providers */}
+					{selectedProvider !== "bedrock" && (
+						<ModelInfoView
+							apiProvider={selectedProvider}
+							selectedModelId={selectedModelId}
+							modelInfo={selectedModelInfo}
+							isDescriptionExpanded={isDescriptionExpanded}
+							setIsDescriptionExpanded={setIsDescriptionExpanded}
+						/>
+					)}
+					
+					{/* for now only show thinking budget for non-bedrock providers */}
+					{selectedProvider !== "bedrock" && (
+						<ThinkingBudget
+							key={`${selectedProvider}-${selectedModelId}`}
+							apiConfiguration={apiConfiguration}
+							setApiConfigurationField={setApiConfigurationField}
+							modelInfo={selectedModelInfo}
+						/>
+					)}
 				</>
 			)}
 
