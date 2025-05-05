@@ -87,7 +87,23 @@ function getSelectedModelInfo({
 		case "bedrock":
 			// Special case for custom ARN.
 			if (id === "custom-arn") {
-				return { maxTokens: 5000, contextWindow: 128_000, supportsPromptCache: false, supportsImages: true }
+				return {
+					// defaults to cross Claude model compatible safe values if not set in apiConfiguration
+					maxTokens: apiConfiguration?.awsCustomArnMaxOutputTokens || 8192,
+					contextWindow: apiConfiguration?.awsCustomArnInputContextTokens || 200_000,
+					supportsImages: apiConfiguration?.awsCustomArnSupportsImages || false,
+					supportsComputerUse: apiConfiguration?.awsCustomArnSupportsComputerUse || false,
+					supportsPromptCache: apiConfiguration?.awsCustomArnSupportsPromptCaching || false,
+					inputPrice: apiConfiguration?.awsCustomArnInputPrice || 3.0,
+					outputPrice: apiConfiguration?.awsCustomArnOutputPrice || 15.0,
+					cacheWritesPrice: apiConfiguration?.awsCustomArnCacheWritesPrice || 3.75,
+					cacheReadsPrice: apiConfiguration?.awsCustomArnCacheReadsPrice || 0.3,
+					minTokensPerCachePoint: apiConfiguration?.awsCustomArnMinTokensPerCachePoint || 1024,
+					maxCachePoints: apiConfiguration?.awsCustomArnMaxCachePoints || 4,
+					cachableFields: typeof apiConfiguration?.awsCustomArnCachableFields === "string"
+						? apiConfiguration.awsCustomArnCachableFields.split(",").map(f => f.trim()).filter(Boolean)
+						: [],
+				}
 			}
 
 			return bedrockModels[id as keyof typeof bedrockModels] ?? bedrockModels[bedrockDefaultModelId]
