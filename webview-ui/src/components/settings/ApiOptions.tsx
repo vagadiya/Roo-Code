@@ -191,11 +191,11 @@ const ApiOptions = ({
 	const { data: routerModels } = useRouterModels()
 
 	// Update apiConfiguration.aiModelId whenever selectedModelId changes.
-	useEffect(() => {
-		if (selectedModelId) {
-			setApiConfigurationField("apiModelId", selectedModelId)
-		}
-	}, [selectedModelId, setApiConfigurationField])
+	// useEffect(() => {
+	// 	if (selectedModelId) {
+	// 		setApiConfigurationField("apiModelId", selectedModelId)
+	// 	}
+	// }, [selectedModelId, setApiConfigurationField])
 
 	// Debounced refresh model updates, only executed 250ms after the user
 	// stops typing.
@@ -233,18 +233,131 @@ const ApiOptions = ({
 		],
 	)
 
-	useEffect(() => {
-		const apiValidationResult =
-			validateApiConfiguration(apiConfiguration) || validateModelId(apiConfiguration, routerModels)
-		setErrorMessage(apiValidationResult)
-	}, [apiConfiguration, routerModels, setErrorMessage])
-
 	// Ensure Bedrock is always selected as the provider
 	useEffect(() => {
 		if (apiConfiguration.apiProvider !== "bedrock") {
 			setApiConfigurationField("apiProvider", "bedrock");
 		}
 	}, [apiConfiguration.apiProvider, setApiConfigurationField])
+
+	// Ensure awsUseProfile defaults to true and event is fired on mount
+	useEffect(() => {
+		if (!apiConfiguration?.awsUseProfile) {
+			setApiConfigurationField("awsUseProfile", true);
+		}
+	}, [apiConfiguration.awsUseProfile, setApiConfigurationField])
+
+	// Ensure awsProfile defaults to 'bedrock' and event is fired on mount
+	useEffect(() => {
+		if (!apiConfiguration?.awsProfile) {
+			setApiConfigurationField("awsProfile", "bedrock");
+		}
+	}, [apiConfiguration.awsProfile, setApiConfigurationField])
+
+	// Ensure awsRegion defaults to 'us-east-1' and event is fired on mount
+	useEffect(() => {
+		if (!apiConfiguration?.awsRegion) {
+			setApiConfigurationField("awsRegion", "us-east-1");
+		}
+	}, [apiConfiguration.awsRegion, setApiConfigurationField])
+
+	// Ensure awsUsePromptCache defaults to true and event is fired on mount
+	// useEffect(() => {
+	// 	if (!apiConfiguration?.awsUsePromptCache) {
+	// 		setApiConfigurationField("awsUsePromptCache", true);
+	// 	}
+	// }, [apiConfiguration.awsUsePromptCache, setApiConfigurationField])
+
+	// Ensure awsCustomArnInputContextTokens defaults to 200_000 and event is fired on mount
+	useEffect(() => {
+		if (!apiConfiguration?.awsCustomArnInputContextTokens) {
+			setApiConfigurationField("awsCustomArnInputContextTokens", 200_000);
+		}
+	}, [apiConfiguration.awsCustomArnInputContextTokens, setApiConfigurationField])
+
+	// Ensure awsCustomArnMaxOutputTokens defaults to 8192 and event is fired on mount
+	useEffect(() => {
+		if (!apiConfiguration?.awsCustomArnMaxOutputTokens) {
+			setApiConfigurationField("awsCustomArnMaxOutputTokens", 8192);
+		}
+	}, [apiConfiguration.awsCustomArnMaxOutputTokens, setApiConfigurationField])
+
+	// Ensure awsCustomArnSupportsImages defaults to true and event is fired on mount
+	// useEffect(() => {
+	// 	if (!apiConfiguration?.awsCustomArnSupportsImages) {
+	// 		setApiConfigurationField("awsCustomArnSupportsImages", true);
+	// 	}
+	// }, [apiConfiguration.awsCustomArnSupportsImages, setApiConfigurationField])
+
+	// Ensure awsCustomArnSupportsComputerUse defaults to true and event is fired on mount
+	// useEffect(() => {
+	// 	if (!apiConfiguration?.awsCustomArnSupportsComputerUse) {
+	// 		setApiConfigurationField("awsCustomArnSupportsComputerUse", true);
+	// 	}
+	// }, [apiConfiguration.awsCustomArnSupportsComputerUse, setApiConfigurationField])
+
+	// Ensure awsCustomArnSupportsPromptCaching defaults to true and event is fired on mount
+	// useEffect(() => {
+	// 	if (!apiConfiguration?.awsCustomArnSupportsPromptCaching) {
+	// 		setApiConfigurationField("awsCustomArnSupportsPromptCaching", true);
+	// 	}
+	// }, [apiConfiguration.awsCustomArnSupportsPromptCaching, setApiConfigurationField])
+
+	// Ensure awsCustomArnInputPrice defaults to 3 and event is fired on mount
+	useEffect(() => {
+		if (!apiConfiguration?.awsCustomArnInputPrice) {
+			setApiConfigurationField("awsCustomArnInputPrice", 3);
+		}
+	}, [apiConfiguration.awsCustomArnInputPrice, setApiConfigurationField])
+
+	// Ensure awsCustomArnOutputPrice defaults to 15 and event is fired on mount
+	useEffect(() => {
+		if (!apiConfiguration?.awsCustomArnOutputPrice) {
+			setApiConfigurationField("awsCustomArnOutputPrice", 15);
+		}
+	}, [apiConfiguration.awsCustomArnOutputPrice, setApiConfigurationField])
+
+	// Ensure awsCustomArnCacheWritesPrice defaults to 3.75 and event is fired on mount
+	useEffect(() => {
+		if (!apiConfiguration?.awsCustomArnCacheWritesPrice) {
+			setApiConfigurationField("awsCustomArnCacheWritesPrice", 3.75);
+		}
+	}, [apiConfiguration.awsCustomArnCacheWritesPrice, setApiConfigurationField])
+
+	// Ensure awsCustomArnCacheReadsPrice defaults to 0.3 and event is fired on mount
+	useEffect(() => {
+		if (!apiConfiguration?.awsCustomArnCacheReadsPrice) {
+			setApiConfigurationField("awsCustomArnCacheReadsPrice", 0.3);
+		}
+	}, [apiConfiguration.awsCustomArnCacheReadsPrice, setApiConfigurationField])
+
+	// Ensure awsCustomArnMinTokensPerCachePoint defaults to 1024 and event is fired on mount
+	useEffect(() => {
+		if (!apiConfiguration?.awsCustomArnMinTokensPerCachePoint) {
+			setApiConfigurationField("awsCustomArnMinTokensPerCachePoint", 1024);
+		}
+	}, [apiConfiguration.awsCustomArnMinTokensPerCachePoint, setApiConfigurationField])
+
+	// Ensure awsCustomArnMaxCachePoints defaults to 4 and event is fired on mount
+	useEffect(() => {
+		if (!apiConfiguration?.awsCustomArnMaxCachePoints) {
+			setApiConfigurationField("awsCustomArnMaxCachePoints", 4);
+		}
+	}, [apiConfiguration.awsCustomArnMaxCachePoints, setApiConfigurationField])
+
+	// Ensure awsCustomArnCachableFields defaults to ["system", "messages", "tools"] and event is fired on mount
+	useEffect(() => {
+		if (!apiConfiguration?.awsCustomArnCachableFields) {
+			setApiConfigurationField("awsCustomArnCachableFields", "system, messages, tools");
+		}
+	}, [apiConfiguration.awsCustomArnCachableFields, setApiConfigurationField])
+
+	useEffect(() => {
+		const apiValidationResult =
+			validateApiConfiguration(apiConfiguration) || validateModelId(apiConfiguration, routerModels)
+		console.log("apiValidationResult", apiValidationResult)
+		setErrorMessage(apiValidationResult)
+	}, [apiConfiguration, routerModels, setErrorMessage])
 
 	const { data: openRouterModelProviders } = useOpenRouterModelProviders(apiConfiguration?.openRouterModelId, {
 		enabled:
@@ -383,7 +496,7 @@ const ApiOptions = ({
 
 	return (
 		<div className="flex flex-col gap-3">
-			<div className="flex flex-col gap-1 relative" style={{ display: "none" }}>
+			<div className="flex flex-col gap-1 relative" hidden={true}>
 				<div className="flex justify-between items-center">
 					<label className="block font-medium mb-1">{t("settings:providers.apiProvider")}</label>
 					{getSelectedProviderDocUrl() && (
@@ -726,7 +839,7 @@ const ApiOptions = ({
 							</VSCodeTextField>
 						</>
 					)}
-					<div style={{ display: "none" }}>
+					<div hidden={true}>
 						<label className="block font-medium mb-1">{t("settings:providers.awsRegion")}</label>
 						<Select
 							value={apiConfiguration?.awsRegion || "us-east-1"}
@@ -760,7 +873,7 @@ const ApiOptions = ({
 							/>
 						</div>
 					</Checkbox>
-					<div style={{ display: "none" }}>
+					<div hidden={true}>
 						<div className="text-sm text-vscode-descriptionForeground ml-6 mt-1">
 							{t("settings:providers.cacheUsageNote")}
 						</div>
@@ -1747,7 +1860,7 @@ const ApiOptions = ({
 
 			{(selectedProviderModelOptions.length > 0 || selectedProvider === "bedrock") && (
 				<>
-					<div style={{ display: "none" }}>
+					<div hidden={true}>
 						<label className="block font-medium mb-1">{t("settings:providers.model")}</label>
 
 						<Select
@@ -1841,21 +1954,21 @@ const ApiOptions = ({
 									<div className="flex flex-col space-y-2">
 										<div className="flex items-center space-x-2">
 											<Checkbox 
-												checked={apiConfiguration?.awsCustomArnSupportsImages || true}
+												checked={apiConfiguration?.awsCustomArnSupportsImages || false}
 											onChange={(e) => setApiConfigurationField("awsCustomArnSupportsImages", e)}
 											/>
 											<span>Supports Images</span>
 										</div>
 										<div className="flex items-center space-x-2">
 											<Checkbox 
-												checked={apiConfiguration?.awsCustomArnSupportsComputerUse || true}
+												checked={apiConfiguration?.awsCustomArnSupportsComputerUse || false}
 												onChange={(e) => setApiConfigurationField("awsCustomArnSupportsComputerUse", e)}
 											/>
 											<span>Supports Computer Use</span>
 										</div>
 										<div className="flex items-center space-x-2">
 											<Checkbox 
-												checked={apiConfiguration?.awsCustomArnSupportsPromptCaching || true}
+												checked={apiConfiguration?.awsCustomArnSupportsPromptCaching || false}
 												onChange={(e) => setApiConfigurationField("awsCustomArnSupportsPromptCaching", e)}
 											/>
 											<span>Supports Prompt Caching</span>
@@ -1866,7 +1979,7 @@ const ApiOptions = ({
 								{/* Model Costs */}
 								<div className="flex flex-col space-y-2 mt-2">
 									<label className="block font-medium mb-1">
-										Model Costs
+										Model Costs (defaults for Claude 3.7 Sonnet)
 									</label>
 									
 									<VSCodeTextField

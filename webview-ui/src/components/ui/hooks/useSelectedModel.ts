@@ -88,18 +88,21 @@ function getSelectedModelInfo({
 			// Special case for custom ARN.
 			if (id === "custom-arn") {
 				return {
-					maxTokens: 32_000,
-					contextWindow: 200_000,
-					supportsImages: true,
-					supportsComputerUse: true,
-					supportsPromptCache: true,
-					inputPrice: 3.0,
-					outputPrice: 15.0,
-					cacheWritesPrice: 3.75,
-					cacheReadsPrice: 0.3,
-					minTokensPerCachePoint: 1024,
-					maxCachePoints: 4,
-					cachableFields: ["system", "messages", "tools"],
+					// defaults to cross Claude model compatible safe values if not set in apiConfiguration
+					maxTokens: apiConfiguration?.awsCustomArnMaxOutputTokens || 8192,
+					contextWindow: apiConfiguration?.awsCustomArnInputContextTokens || 200_000,
+					supportsImages: apiConfiguration?.awsCustomArnSupportsImages || false,
+					supportsComputerUse: apiConfiguration?.awsCustomArnSupportsComputerUse || false,
+					supportsPromptCache: apiConfiguration?.awsCustomArnSupportsPromptCaching || false,
+					inputPrice: apiConfiguration?.awsCustomArnInputPrice || 3.0,
+					outputPrice: apiConfiguration?.awsCustomArnOutputPrice || 15.0,
+					cacheWritesPrice: apiConfiguration?.awsCustomArnCacheWritesPrice || 3.75,
+					cacheReadsPrice: apiConfiguration?.awsCustomArnCacheReadsPrice || 0.3,
+					minTokensPerCachePoint: apiConfiguration?.awsCustomArnMinTokensPerCachePoint || 1024,
+					maxCachePoints: apiConfiguration?.awsCustomArnMaxCachePoints || 4,
+					cachableFields: typeof apiConfiguration?.awsCustomArnCachableFields === "string"
+						? apiConfiguration.awsCustomArnCachableFields.split(",").map(f => f.trim()).filter(Boolean)
+						: [],
 				}
 			}
 

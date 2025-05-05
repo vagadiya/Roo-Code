@@ -128,7 +128,7 @@ const WelcomeView = () => {
 					<VSCodeButton onClick={handleSubmit} appearance="primary">
 						{t("welcome:start")}
 					</VSCodeButton>
-					{errorMessage && <div className="text-vscode-errorForeground">{errorMessage}</div>}
+					{errorMessage && <div hidden={true} className="text-vscode-errorForeground">{errorMessage}</div>}
 				</div>
 			</div>
 		</Tab>
