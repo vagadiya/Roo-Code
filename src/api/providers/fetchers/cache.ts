@@ -8,18 +8,7 @@ import { getCacheDirectoryPath } from "../../../shared/storagePathManager"
 import { RouterName, ModelRecord } from "../../../shared/api"
 import { fileExistsAtPath } from "../../../utils/fs"
 
-import { getOpenRouterModels } from "./openrouter"
-import { getRequestyModels } from "./requesty"
-import { getGlamaModels } from "./glama"
-import { getUnboundModels } from "./unbound"
-
 const memoryCache = new NodeCache({ stdTTL: 5 * 60, checkperiod: 5 * 60 })
-
-async function writeModels(router: RouterName, data: ModelRecord) {
-	const filename = `${router}_models.json`
-	const cacheDir = await getCacheDirectoryPath(ContextProxy.instance.globalStorageUri.fsPath)
-	await fs.writeFile(path.join(cacheDir, filename), JSON.stringify(data))
-}
 
 async function readModels(router: RouterName): Promise<ModelRecord | undefined> {
 	const filename = `${router}_models.json`
@@ -43,33 +32,6 @@ export const getModels = async (router: RouterName): Promise<ModelRecord> => {
 
 	if (models) {
 		// console.log(`[getModels] NodeCache hit for ${router} -> ${Object.keys(models).length}`)
-		return models
-	}
-
-	switch (router) {
-		case "openrouter":
-			models = await getOpenRouterModels()
-			break
-		case "requesty":
-			models = await getRequestyModels()
-			break
-		case "glama":
-			models = await getGlamaModels()
-			break
-		case "unbound":
-			models = await getUnboundModels()
-			break
-	}
-
-	if (Object.keys(models).length > 0) {
-		// console.log(`[getModels] API fetch for ${router} -> ${Object.keys(models).length}`)
-		memoryCache.set(router, models)
-
-		try {
-			await writeModels(router, models)
-			// console.log(`[getModels] wrote ${router} models to file cache`)
-		} catch (error) {}
-
 		return models
 	}
 
