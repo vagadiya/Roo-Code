@@ -6,7 +6,7 @@ import { ExtensionMessage } from "@roo/shared/ExtensionMessage"
 import TranslationProvider from "./i18n/TranslationContext"
 
 import { vscode } from "./utils/vscode"
-import { telemetryClient } from "./utils/TelemetryClient"
+//import { telemetryClient } from "./utils/TelemetryClient"
 import { ExtensionStateContextProvider, useExtensionState } from "./context/ExtensionStateContext"
 import ChatView, { ChatViewRef } from "./components/chat/ChatView"
 import HistoryView from "./components/history/HistoryView"
@@ -27,7 +27,7 @@ const tabsByMessageAction: Partial<Record<NonNullable<ExtensionMessage["action"]
 }
 
 const App = () => {
-	const { didHydrateState, showWelcome, shouldShowAnnouncement, telemetrySetting, telemetryKey, machineId } =
+	const { didHydrateState, showWelcome, shouldShowAnnouncement } =
 		useExtensionState()
 
 	const [showAnnouncement, setShowAnnouncement] = useState(false)
@@ -93,11 +93,12 @@ const App = () => {
 		}
 	}, [shouldShowAnnouncement])
 
-	useEffect(() => {
-		if (didHydrateState) {
-			telemetryClient.updateTelemetryState(telemetrySetting, telemetryKey, machineId)
-		}
-	}, [telemetrySetting, telemetryKey, machineId, didHydrateState])
+	// disable telemetryClient for now, need to understand why this is used instead of telemetryService
+	// useEffect(() => {
+	// 	if (didHydrateState) {
+	// 		telemetryClient.updateTelemetryState(telemetrySetting, telemetryKey, machineId)
+	// 	}
+	// }, [telemetrySetting, telemetryKey, machineId, didHydrateState])
 
 	// Tell the extension that we are ready to receive messages.
 	useEffect(() => vscode.postMessage({ type: "webviewDidLaunch" }), [])
