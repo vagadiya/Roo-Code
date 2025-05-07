@@ -14,6 +14,7 @@ import {
 	bedrockDefaultModelId,
 	bedrockModels,
 	bedrockDefaultPromptRouterModelId,
+	APPROVED_BEDROCK_ARNS,
 } from "../../shared/api"
 import { ProviderSettings } from "../../schemas"
 import { ApiStream } from "../transform/stream"
@@ -531,6 +532,18 @@ export class AwsBedrockHandler extends BaseProvider implements SingleCompletionH
 		 * match[3] - The resource type (e.g., "foundation-model")
 		 * match[4] - The resource ID (e.g., "anthropic.claude-3-sonnet-20240229-v1:0")
 		 */
+
+		// Check if the ARN is in the approved list
+		if (!APPROVED_BEDROCK_ARNS.includes(arn)) {
+			return {
+				isValid: false,
+				region: undefined,
+				modelType: undefined,
+				modelId: undefined,
+				errorMessage: "Invalid ARN.",
+				crossRegionInference: false,
+			};
+		}
 
 		const arnRegex = /^arn:aws:(?:bedrock|sagemaker):([^:]+):([^:]*):(?:([^\/]+)\/([\w\.\-:]+)|([^\/]+))$/
 		let match = arn.match(arnRegex)
