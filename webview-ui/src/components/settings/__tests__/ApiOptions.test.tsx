@@ -394,4 +394,18 @@ describe("ApiOptions", () => {
 			)
 		})
 	})
+
+	it("automatically selects Bedrock provider", () => {
+		const mockSetApiConfigurationField = jest.fn();
+
+		renderApiOptions({
+			apiConfiguration: {
+				apiProvider: "anthropic", // Start with a non-Bedrock provider
+			},
+			setApiConfigurationField: mockSetApiConfigurationField,
+		});
+
+		// Verify that setApiConfigurationField was called to set provider to "bedrock"
+		expect(mockSetApiConfigurationField).toHaveBeenCalledWith("apiProvider", "bedrock");
+	});
 })

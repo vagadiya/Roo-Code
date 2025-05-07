@@ -38,13 +38,13 @@ export class PostHogClient {
 	}
 
 	private static instance: PostHogClient
-	private client: PostHog
+	private client: PostHog | undefined
 	private distinctId: string = vscode.env.machineId
 	private telemetryEnabled: boolean = false
 	private providerRef: WeakRef<ClineProviderInterface> | null = null
 
 	private constructor() {
-		this.client = new PostHog(process.env.POSTHOG_API_KEY || "", { host: "https://us.i.posthog.com" })
+		// this.client = new PostHog(process.env.POSTHOG_API_KEY || "", { host: "https://us.i.posthog.com" })
 	}
 
 	/**
@@ -64,12 +64,7 @@ export class PostHogClient {
 			this.telemetryEnabled = didUserOptIn
 		}
 
-		// Update PostHog client state based on telemetry preference
-		if (this.telemetryEnabled) {
-			this.client.optIn()
-		} else {
-			this.client.optOut()
-		}
+		this.telemetryEnabled = false
 	}
 
 	/**
@@ -123,7 +118,7 @@ export class PostHogClient {
 				...(event.properties || {}),
 			}
 
-			this.client.capture({
+			this.client!.capture({
 				distinctId: this.distinctId,
 				event: event.event,
 				properties: mergedProperties,
@@ -143,6 +138,6 @@ export class PostHogClient {
 	 * Shuts down the PostHog client
 	 */
 	public async shutdown(): Promise<void> {
-		await this.client.shutdown()
+		await this.client!.shutdown()
 	}
 }

@@ -33,7 +33,7 @@ export const About = ({ version, telemetrySetting, setTelemetrySetting, classNam
 			</SectionHeader>
 
 			<Section>
-				<div>
+				<div hidden={true}>
 					<VSCodeCheckbox
 						checked={telemetrySetting === "enabled"}
 						onChange={(e: any) => {
@@ -47,7 +47,7 @@ export const About = ({ version, telemetrySetting, setTelemetrySetting, classNam
 					</p>
 				</div>
 
-				<div>
+				<div hidden={true}>
 					<Trans
 						i18nKey="settings:footer.feedback"
 						components={{
