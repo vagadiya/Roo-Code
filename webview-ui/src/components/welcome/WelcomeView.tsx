@@ -45,9 +45,9 @@ const WelcomeView = () => {
 				</div>
 
 				<div className="mb-4">
-					<h4 className="mt-3 mb-2 text-center">{t("welcome:startRouter")}</h4>
+					<h4 className="mt-3 mb-2 text-center" hidden={true}>{t("welcome:startRouter")}</h4>
 
-					<div className="flex gap-4">
+					<div className="flex gap-4" hidden={true}>
 						{/* Define the providers */}
 						{(() => {
 							// Provider card configuration
@@ -100,8 +100,8 @@ const WelcomeView = () => {
 						})()}
 					</div>
 
-					<div className="text-center my-4 text-xl uppercase font-bold">{t("welcome:or")}</div>
-					<h4 className="mt-3 mb-2 text-center">{t("welcome:startCustom")}</h4>
+					<div className="text-center my-4 text-xl uppercase font-bold" hidden={true}>{t("welcome:or")}</div>
+					<h4 className="mt-3 mb-2 text-center" hidden={true}>{t("welcome:startCustom")}</h4>
 					<ApiOptions
 						fromWelcomeView
 						apiConfiguration={apiConfiguration || {}}
@@ -128,7 +128,7 @@ const WelcomeView = () => {
 					<VSCodeButton onClick={handleSubmit} appearance="primary">
 						{t("welcome:start")}
 					</VSCodeButton>
-					{errorMessage && <div className="text-vscode-errorForeground">{errorMessage}</div>}
+					{errorMessage && <div hidden={true} className="text-vscode-errorForeground">{errorMessage}</div>}
 				</div>
 			</div>
 		</Tab>

@@ -46,6 +46,19 @@ type ProviderSettings = {
 	awsProfile?: string | undefined
 	awsUseProfile?: boolean | undefined
 	awsCustomArn?: string | undefined
+	awsCustomArnInputContextTokens?: number | undefined
+	awsCustomArnMaxOutputTokens?: number | undefined
+	awsCustomArnSupportsImages?: boolean | undefined
+	awsCustomArnSupportsComputerUse?: boolean | undefined
+	awsCustomArnSupportsPromptCaching?: boolean | undefined
+	awsCustomArnThinking?: boolean | undefined
+	awsCustomArnInputPrice?: number | undefined
+	awsCustomArnOutputPrice?: number | undefined
+	awsCustomArnCacheWritesPrice?: number | undefined
+	awsCustomArnCacheReadsPrice?: number | undefined
+	awsCustomArnMinTokensPerCachePoint?: number | undefined
+	awsCustomArnMaxCachePoints?: number | undefined
+	awsCustomArnCachableFields?: string | undefined
 	vertexKeyFile?: string | undefined
 	vertexJsonCredentials?: string | undefined
 	vertexProjectId?: string | undefined

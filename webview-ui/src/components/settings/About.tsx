@@ -25,7 +25,7 @@ export const About = ({ version, telemetrySetting, setTelemetrySetting, classNam
 
 	return (
 		<div className={cn("flex flex-col gap-2", className)} {...props}>
-			<SectionHeader description={`Version: ${version}`}>
+			<SectionHeader description={`Version: ${version} (customised)`}>
 				<div className="flex items-center gap-2">
 					<Info className="w-4" />
 					<div>{t("settings:sections.about")}</div>
@@ -33,7 +33,7 @@ export const About = ({ version, telemetrySetting, setTelemetrySetting, classNam
 			</SectionHeader>
 
 			<Section>
-				<div>
+				<div hidden={true}>
 					<VSCodeCheckbox
 						checked={telemetrySetting === "enabled"}
 						onChange={(e: any) => {
@@ -47,7 +47,7 @@ export const About = ({ version, telemetrySetting, setTelemetrySetting, classNam
 					</p>
 				</div>
 
-				<div>
+				<div hidden={true}>
 					<Trans
 						i18nKey="settings:footer.feedback"
 						components={{
