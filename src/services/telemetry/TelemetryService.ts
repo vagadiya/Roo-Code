@@ -1,6 +1,6 @@
 import { ZodError } from "zod"
 
-import { logger } from "../../utils/logging"
+// import { logger } from "../../utils/logging"
 import { PostHogClient, ClineProviderInterface } from "./PostHogClient"
 
 /**
@@ -38,7 +38,7 @@ class TelemetryService {
 			this.client!.setProvider(provider)
 		}
 
-		logger.debug("TelemetryService: ClineProvider reference set")
+		// logger.debug("TelemetryService: ClineProvider reference set")
 	}
 
 	/**
