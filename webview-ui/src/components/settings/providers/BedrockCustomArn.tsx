@@ -164,6 +164,13 @@ export const BedrockCustomArn = ({ apiConfiguration, setApiConfigurationField }:
 							/>
 							<span>Supports Prompt Caching</span>
 						</div>
+						<div className="flex items-center space-x-2">
+							<Checkbox 
+								checked={apiConfiguration?.awsCustomArnThinking || false}
+								onChange={(e) => setApiConfigurationField("awsCustomArnThinking", e)}
+							/>
+							<span>Supports Extended Thinking</span>
+						</div>
 					</div>
 				</div>
 

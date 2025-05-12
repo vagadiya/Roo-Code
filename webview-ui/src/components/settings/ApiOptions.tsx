@@ -72,6 +72,20 @@ const ApiOptions = ({
 	setErrorMessage,
 }: ApiOptionsProps) => {
 	const { t } = useAppTranslation()
+	
+	// Set bedrock as the default provider if none is selected
+	useEffect(() => {
+		if (!apiConfiguration.apiProvider) {
+			setApiConfigurationField("apiProvider", "bedrock")
+		}
+	}, [apiConfiguration.apiProvider, setApiConfigurationField])
+	
+	// Set default Bedrock model ID when Bedrock is selected and no model ID is set
+	useEffect(() => {
+		if (apiConfiguration.apiProvider === "bedrock" && !apiConfiguration.apiModelId) {
+			setApiConfigurationField("apiModelId", "custom-arn")
+		}
+	}, [apiConfiguration.apiProvider, apiConfiguration.apiModelId, setApiConfigurationField])
 
 	const [customHeaders, setCustomHeaders] = useState<[string, string][]>(() => {
 		const headers = apiConfiguration?.openAiHeaders || {}
