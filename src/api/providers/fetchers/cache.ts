@@ -34,6 +34,15 @@ export const getModels = async (
 	apiKey: string | undefined = undefined,
 	baseUrl: string | undefined = undefined,
 ): Promise<ModelRecord> => {
+	// fake usage of apiKey and baseUrl to avoid TS error
+	if (apiKey) {
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		const _ = apiKey
+	}
+	if (baseUrl) {
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		const _ = baseUrl
+	}
 	let models = memoryCache.get<ModelRecord>(router)
 	if (models) {
 		// console.log(`[getModels] NodeCache hit for ${router} -> ${Object.keys(models).length}`)
