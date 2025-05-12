@@ -72,6 +72,20 @@ const ApiOptions = ({
 	setErrorMessage,
 }: ApiOptionsProps) => {
 	const { t } = useAppTranslation()
+	
+	// Set bedrock as the default provider if none is selected
+	useEffect(() => {
+		if (!apiConfiguration.apiProvider) {
+			setApiConfigurationField("apiProvider", "bedrock")
+		}
+	}, [apiConfiguration.apiProvider, setApiConfigurationField])
+	
+	// Set default Bedrock model ID when Bedrock is selected and no model ID is set
+	useEffect(() => {
+		if (apiConfiguration.apiProvider === "bedrock" && !apiConfiguration.apiModelId) {
+			setApiConfigurationField("apiModelId", "custom-arn")
+		}
+	}, [apiConfiguration.apiProvider, apiConfiguration.apiModelId, setApiConfigurationField])
 
 	const [customHeaders, setCustomHeaders] = useState<[string, string][]>(() => {
 		const headers = apiConfiguration?.openAiHeaders || {}
@@ -176,18 +190,26 @@ const ApiOptions = ({
 	useEffect(() => {
 		const apiValidationResult =
 			validateApiConfiguration(apiConfiguration) || validateModelId(apiConfiguration, routerModels)
-
+		console.log("apiValidationResult", apiValidationResult)
 		setErrorMessage(apiValidationResult)
 	}, [apiConfiguration, routerModels, setErrorMessage])
 
 	const selectedProviderModels = useMemo(
-		() =>
-			MODELS_BY_PROVIDER[selectedProvider]
+		() => {
+			// If the selected provider is Bedrock, return an empty array
+			// (we'll add the "Use custom ARN..." option separately in the render)
+			if (selectedProvider === "bedrock") {
+				return [];
+			}
+
+			// For other providers, continue with the existing logic
+			return MODELS_BY_PROVIDER[selectedProvider]
 				? Object.keys(MODELS_BY_PROVIDER[selectedProvider]).map((modelId) => ({
 						value: modelId,
 						label: modelId,
 					}))
-				: [],
+				: [];
+		},
 		[selectedProvider],
 	)
 
@@ -266,7 +288,7 @@ const ApiOptions = ({
 				<div className="flex justify-between items-center">
 					<label className="block font-medium mb-1">{t("settings:providers.apiProvider")}</label>
 					{docs && (
-						<div className="text-xs text-vscode-descriptionForeground">
+						<div className="text-xs text-vscode-descriptionForeground" hidden={true}>
 							<VSCodeLink href={docs.url} className="hover:text-vscode-foreground" target="_blank">
 								{t("settings:providers.providerDocumentation", { provider: docs.name })}
 							</VSCodeLink>
@@ -287,7 +309,7 @@ const ApiOptions = ({
 				</Select>
 			</div>
 
-			{errorMessage && <ApiErrorMessage errorMessage={errorMessage} />}
+			{false && errorMessage && <ApiErrorMessage errorMessage={errorMessage} />}
 
 			{selectedProvider === "openrouter" && (
 				<OpenRouter
@@ -342,7 +364,6 @@ const ApiOptions = ({
 				<Bedrock
 					apiConfiguration={apiConfiguration}
 					setApiConfigurationField={setApiConfigurationField}
-					selectedModelInfo={selectedModelInfo}
 				/>
 			)}
 
@@ -445,20 +466,24 @@ const ApiOptions = ({
 						/>
 					)}
 
-					<ModelInfoView
-						apiProvider={selectedProvider}
-						selectedModelId={selectedModelId}
-						modelInfo={selectedModelInfo}
-						isDescriptionExpanded={isDescriptionExpanded}
-						setIsDescriptionExpanded={setIsDescriptionExpanded}
-					/>
+					{selectedProvider !== "bedrock" && (
+						<ModelInfoView
+							apiProvider={selectedProvider}
+							selectedModelId={selectedModelId}
+							modelInfo={selectedModelInfo}
+							isDescriptionExpanded={isDescriptionExpanded}
+							setIsDescriptionExpanded={setIsDescriptionExpanded}
+						/>
+					)}
 
-					<ThinkingBudget
-						key={`${selectedProvider}-${selectedModelId}`}
-						apiConfiguration={apiConfiguration}
-						setApiConfigurationField={setApiConfigurationField}
-						modelInfo={selectedModelInfo}
-					/>
+					{selectedProvider !== "bedrock" && (
+						<ThinkingBudget
+							key={`${selectedProvider}-${selectedModelId}`}
+							apiConfiguration={apiConfiguration}
+							setApiConfigurationField={setApiConfigurationField}
+							modelInfo={selectedModelInfo}
+						/>
+					)}	
 				</>
 			)}
 

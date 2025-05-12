@@ -171,6 +171,11 @@ export const ExtensionStateContextProvider: React.FC<{ children: React.ReactNode
 		terminalZdotdir: false, // Default ZDOTDIR handling setting
 		terminalCompressProgressBar: true, // Default to compress progress bar output
 		historyPreviewCollapsed: false, // Initialize the new state (default to expanded)
+		// Set default API configuration with bedrock as the provider
+		apiConfiguration: {
+			apiProvider: "bedrock",
+			apiModelId: "custom-arn"
+		}
 	})
 
 	const [didHydrateState, setDidHydrateState] = useState(false)

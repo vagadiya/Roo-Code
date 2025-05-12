@@ -1,4 +1,4 @@
-import { useCallback } from "react"
+import { useCallback, useEffect } from "react"
 import { Checkbox } from "vscrui"
 import { VSCodeTextField, VSCodeRadio, VSCodeRadioGroup } from "@vscode/webview-ui-toolkit/react"
 
@@ -16,7 +16,7 @@ type BedrockProps = {
 	selectedModelInfo?: ModelInfo
 }
 
-export const Bedrock = ({ apiConfiguration, setApiConfigurationField, selectedModelInfo }: BedrockProps) => {
+export const Bedrock = ({ apiConfiguration, setApiConfigurationField }: BedrockProps) => {
 	const { t } = useAppTranslation()
 
 	const handleInputChange = useCallback(
@@ -30,23 +30,52 @@ export const Bedrock = ({ apiConfiguration, setApiConfigurationField, selectedMo
 		[setApiConfigurationField],
 	)
 
+	// Ensure awsUseProfile defaults to true and event is fired on mount
+	useEffect(() => {
+		if (!apiConfiguration?.awsUseProfile) {
+			setApiConfigurationField("awsUseProfile", true);
+		}
+	}, [apiConfiguration.awsUseProfile, setApiConfigurationField])
+
+	// Ensure awsProfile defaults to 'bedrock' and event is fired on mount
+	useEffect(() => {
+		if (!apiConfiguration?.awsProfile) {
+			setApiConfigurationField("awsProfile", "bedrock");
+		}
+	}, [apiConfiguration.awsProfile, setApiConfigurationField])
+
+	// Ensure awsRegion defaults to 'us-east-1' and event is fired on mount
+	useEffect(() => {
+		if (!apiConfiguration?.awsRegion) {
+			setApiConfigurationField("awsRegion", "us-east-1");
+		}
+	}, [apiConfiguration.awsRegion, setApiConfigurationField])
+
+	// Ensure awsUseCrossRegionInference defaults to false and event is fired on mount
+	useEffect(() => {
+		if (!apiConfiguration?.awsUseCrossRegionInference) {
+			setApiConfigurationField("awsUseCrossRegionInference", false);
+		}
+	}, [apiConfiguration.awsUseCrossRegionInference, setApiConfigurationField])
+
 	return (
 		<>
 			<VSCodeRadioGroup
-				value={apiConfiguration?.awsUseProfile ? "profile" : "credentials"}
+				value="profile"
 				onChange={handleInputChange(
 					"awsUseProfile",
 					(e) => (e.target as HTMLInputElement).value === "profile",
-				)}>
-				<VSCodeRadio value="credentials">{t("settings:providers.awsCredentials")}</VSCodeRadio>
-				<VSCodeRadio value="profile">{t("settings:providers.awsProfile")}</VSCodeRadio>
+				)}
+				hidden={true}>
+				<VSCodeRadio value="credentials" hidden={true}>{t("settings:providers.awsCredentials")}</VSCodeRadio>
+				<VSCodeRadio value="profile" hidden={true}>{t("settings:providers.awsProfile")}</VSCodeRadio>
 			</VSCodeRadioGroup>
-			<div className="text-sm text-vscode-descriptionForeground -mt-3">
+			<div className="text-sm text-vscode-descriptionForeground -mt-3" hidden={true}>
 				{t("settings:providers.apiKeyStorageNotice")}
 			</div>
 			{apiConfiguration?.awsUseProfile ? (
 				<VSCodeTextField
-					value={apiConfiguration?.awsProfile || ""}
+					value={apiConfiguration?.awsProfile || "bedrock"}
 					onInput={handleInputChange("awsProfile")}
 					placeholder={t("settings:placeholders.profileName")}
 					className="w-full">
@@ -80,10 +109,10 @@ export const Bedrock = ({ apiConfiguration, setApiConfigurationField, selectedMo
 					</VSCodeTextField>
 				</>
 			)}
-			<div>
+			<div hidden={true}>
 				<label className="block font-medium mb-1">{t("settings:providers.awsRegion")}</label>
 				<Select
-					value={apiConfiguration?.awsRegion || ""}
+					value={apiConfiguration?.awsRegion || "us-east-1"}
 					onValueChange={(value) => setApiConfigurationField("awsRegion", value)}>
 					<SelectTrigger className="w-full">
 						<SelectValue placeholder={t("settings:common.select")} />
@@ -102,22 +131,20 @@ export const Bedrock = ({ apiConfiguration, setApiConfigurationField, selectedMo
 				onChange={handleInputChange("awsUseCrossRegionInference", noTransform)}>
 				{t("settings:providers.awsCrossRegion")}
 			</Checkbox>
-			{selectedModelInfo?.supportsPromptCache && (
-				<Checkbox
-					checked={apiConfiguration?.awsUsePromptCache || false}
-					onChange={handleInputChange("awsUsePromptCache", noTransform)}>
-					<div className="flex items-center gap-1">
-						<span>{t("settings:providers.enablePromptCaching")}</span>
-						<i
-							className="codicon codicon-info text-vscode-descriptionForeground"
-							title={t("settings:providers.enablePromptCachingTitle")}
-							style={{ fontSize: "12px" }}
-						/>
-					</div>
-				</Checkbox>
-			)}
+			<Checkbox
+				checked={apiConfiguration?.awsUsePromptCache || false}
+				onChange={handleInputChange("awsUsePromptCache", noTransform)}>
+				<div className="flex items-center gap-1">
+					<span>{t("settings:providers.enablePromptCaching")}</span>
+					<i
+						className="codicon codicon-info text-vscode-descriptionForeground"
+						title={t("settings:providers.enablePromptCachingTitle")}
+						style={{ fontSize: "12px" }}
+					/>
+				</div>
+			</Checkbox>
 			<div>
-				<div className="text-sm text-vscode-descriptionForeground ml-6 mt-1">
+				<div hidden={true} className="text-sm text-vscode-descriptionForeground ml-6 mt-1">
 					{t("settings:providers.cacheUsageNote")}
 				</div>
 			</div>

@@ -9,7 +9,7 @@ export const ApiErrorMessage = ({ errorMessage, children }: ApiErrorMessageProps
 	<div className="flex flex-col gap-2 text-vscode-errorForeground text-sm">
 		<div className="flex flex-row items-center gap-1">
 			<div className="codicon codicon-close" />
-			<div>{errorMessage}</div>
+			<div hidden={true}>{errorMessage}</div>
 		</div>
 		{children}
 	</div>
