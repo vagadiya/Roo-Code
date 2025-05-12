@@ -37,7 +37,7 @@ import { useRouterModels } from "./useRouterModels"
 
 export const useSelectedModel = (apiConfiguration?: ApiConfiguration) => {
 	const { data: routerModels, isLoading, isError } = useRouterModels()
-	const provider = apiConfiguration?.apiProvider || "anthropic"
+	const provider = apiConfiguration?.apiProvider || "bedrock"
 
 	const { id, info } =
 		apiConfiguration && routerModels
