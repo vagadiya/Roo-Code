@@ -429,9 +429,9 @@ const ApiOptions = ({
 				</>
 			)}
 
-			{selectedProviderModels.length > 0 && (
+			{selectedProvider === "bedrock" && (
 				<>
-					<div>
+					<div hidden={true}>
 						<label className="block font-medium mb-1">{t("settings:providers.model")}</label>
 						<Select
 							value={selectedModelId === "custom-arn" ? "custom-arn" : selectedModelId}
@@ -465,25 +465,30 @@ const ApiOptions = ({
 							setApiConfigurationField={setApiConfigurationField}
 						/>
 					)}
+				</>
+			)}
 
-					{selectedProvider !== "bedrock" && (
-						<ModelInfoView
-							apiProvider={selectedProvider}
-							selectedModelId={selectedModelId}
-							modelInfo={selectedModelInfo}
-							isDescriptionExpanded={isDescriptionExpanded}
-							setIsDescriptionExpanded={setIsDescriptionExpanded}
-						/>
-					)}
+			{selectedProvider !== "bedrock" && (
+				<>
+					<ModelInfoView
+						apiProvider={selectedProvider}
+						selectedModelId={selectedModelId}
+						modelInfo={selectedModelInfo}
+						isDescriptionExpanded={isDescriptionExpanded}
+						setIsDescriptionExpanded={setIsDescriptionExpanded}
+					/>
+				</>
+			)}
 
-					{selectedProvider !== "bedrock" && (
-						<ThinkingBudget
-							key={`${selectedProvider}-${selectedModelId}`}
-							apiConfiguration={apiConfiguration}
-							setApiConfigurationField={setApiConfigurationField}
-							modelInfo={selectedModelInfo}
-						/>
-					)}	
+			{/* Needs to be replaced with bespoke population of max thinking tokens in BedrockCustomArn.tsx */}
+			{apiConfiguration?.awsCustomArnThinking && (
+				<>
+					<ThinkingBudget
+						key={`${selectedProvider}-${selectedModelId}`}
+						apiConfiguration={apiConfiguration}
+						setApiConfigurationField={setApiConfigurationField}
+						modelInfo={selectedModelInfo}
+					/>
 				</>
 			)}
 

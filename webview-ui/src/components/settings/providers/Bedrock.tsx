@@ -65,10 +65,9 @@ export const Bedrock = ({ apiConfiguration, setApiConfigurationField }: BedrockP
 				onChange={handleInputChange(
 					"awsUseProfile",
 					(e) => (e.target as HTMLInputElement).value === "profile",
-				)}
-				hidden={true}>
-				<VSCodeRadio value="credentials" hidden={true}>{t("settings:providers.awsCredentials")}</VSCodeRadio>
-				<VSCodeRadio value="profile" hidden={true}>{t("settings:providers.awsProfile")}</VSCodeRadio>
+				)} hidden={true}>
+				<VSCodeRadio value="credentials">{t("settings:providers.awsCredentials")}</VSCodeRadio>
+				<VSCodeRadio value="profile">{t("settings:providers.awsProfile")}</VSCodeRadio>
 			</VSCodeRadioGroup>
 			<div className="text-sm text-vscode-descriptionForeground -mt-3" hidden={true}>
 				{t("settings:providers.apiKeyStorageNotice")}
@@ -126,7 +125,7 @@ export const Bedrock = ({ apiConfiguration, setApiConfigurationField }: BedrockP
 					</SelectContent>
 				</Select>
 			</div>
-			<Checkbox
+			<Checkbox hidden={true}
 				checked={apiConfiguration?.awsUseCrossRegionInference || false}
 				onChange={handleInputChange("awsUseCrossRegionInference", noTransform)}>
 				{t("settings:providers.awsCrossRegion")}
@@ -143,7 +142,7 @@ export const Bedrock = ({ apiConfiguration, setApiConfigurationField }: BedrockP
 					/>
 				</div>
 			</Checkbox>
-			<div>
+			<div hidden={true}>
 				<div hidden={true} className="text-sm text-vscode-descriptionForeground ml-6 mt-1">
 					{t("settings:providers.cacheUsageNote")}
 				</div>
