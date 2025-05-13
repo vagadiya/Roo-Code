@@ -9,6 +9,7 @@ export function getSystemInfoSection(cwd: string): string {
 SYSTEM INFORMATION
 
 Operating System: ${osName()}
+Always generate the correct commands for the default shell specified below.
 Default Shell: ${getShell()}
 Home Directory: ${os.homedir().toPosix()}
 Current Workspace Directory: ${cwd.toPosix()}
