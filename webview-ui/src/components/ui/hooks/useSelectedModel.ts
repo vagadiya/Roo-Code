@@ -42,6 +42,7 @@ function getSelectedModel({
 						supportsComputerUse: apiConfiguration?.awsCustomArnSupportsComputerUse || false,
 						supportsPromptCache: apiConfiguration?.awsCustomArnSupportsPromptCaching || false,
 						thinking: apiConfiguration?.awsCustomArnThinking || false,
+						maxThinkingTokens: apiConfiguration?.awsCustomArnMaxThinkingTokens || 8192,
 						inputPrice: apiConfiguration?.awsCustomArnInputPrice || 3.0,
 						outputPrice: apiConfiguration?.awsCustomArnOutputPrice || 15.0,
 						cacheWritesPrice: apiConfiguration?.awsCustomArnCacheWritesPrice || 3.75,

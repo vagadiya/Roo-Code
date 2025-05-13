@@ -39,7 +39,7 @@ export const ThinkingBudget = ({ apiConfiguration, setApiConfigurationField, mod
 
 	return isThinkingModel ? (
 		<>
-			<div className="flex flex-col gap-1">
+			<div className="flex flex-col gap-1" hidden={true}>
 				<div className="font-medium">{t("settings:thinkingBudget.maxTokens")}</div>
 				<div className="flex items-center gap-1">
 					<Slider

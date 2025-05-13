@@ -190,7 +190,6 @@ const ApiOptions = ({
 	useEffect(() => {
 		const apiValidationResult =
 			validateApiConfiguration(apiConfiguration) || validateModelId(apiConfiguration, routerModels)
-		console.log("apiValidationResult", apiValidationResult)
 		setErrorMessage(apiValidationResult)
 	}, [apiConfiguration, routerModels, setErrorMessage])
 

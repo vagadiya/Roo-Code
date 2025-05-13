@@ -1,6 +1,7 @@
 import { useMemo, useEffect } from "react"
 import { Checkbox } from "vscrui"
 import { VSCodeTextField } from "@vscode/webview-ui-toolkit/react"
+import { Slider } from "@/components/ui"
 
 import { ApiConfiguration } from "@roo/shared/api"
 
@@ -102,14 +103,12 @@ export const BedrockCustomArn = ({ apiConfiguration, setApiConfigurationField }:
 						Input Context Tokens
 					</label>
 					<div className="flex items-center space-x-2">
-						<input
-							type="range"
+						<Slider
 							min={128000}
 							max={200000}
 							step={1000}
-							value={apiConfiguration?.awsCustomArnInputContextTokens || 128000}
-							onChange={(e) => setApiConfigurationField("awsCustomArnInputContextTokens", parseInt(e.target.value))}
-							className="w-full"
+							value={[apiConfiguration?.awsCustomArnInputContextTokens || 128000]}
+							onChange={(value) => setApiConfigurationField("awsCustomArnInputContextTokens", Array.isArray(value) ? value[0] : value)}
 						/>
 						<span className="text-sm">
 							{(apiConfiguration?.awsCustomArnInputContextTokens || 128000).toLocaleString()}
@@ -122,14 +121,12 @@ export const BedrockCustomArn = ({ apiConfiguration, setApiConfigurationField }:
 						Max Output Tokens
 					</label>
 					<div className="flex items-center space-x-2">
-						<input
-							type="range"
+						<Slider
 							min={8192}
 							max={64000}
 							step={512}
-							value={apiConfiguration?.awsCustomArnMaxOutputTokens || 8192}
-							onChange={(e) => setApiConfigurationField("awsCustomArnMaxOutputTokens", parseInt(e.target.value))}
-							className="w-full"
+							value={[apiConfiguration?.awsCustomArnMaxOutputTokens || 8192]}
+							onChange={(value) => setApiConfigurationField("awsCustomArnMaxOutputTokens", Array.isArray(value) ? value[0] : value)}
 						/>
 						<span className="text-sm">
 							{(apiConfiguration?.awsCustomArnMaxOutputTokens || 8192).toLocaleString()}
