@@ -1,7 +1,8 @@
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { VSCodeButton, VSCodeLink } from "@vscode/webview-ui-toolkit/react"
 import { useExtensionState } from "@src/context/ExtensionStateContext"
 import { validateApiConfiguration } from "@src/utils/validate"
+import { ProviderName } from "@roo/shared/api"
 import { vscode } from "@src/utils/vscode"
 import ApiOptions from "../settings/ApiOptions"
 import { Tab, TabContent } from "../common/Tab"
@@ -15,6 +16,14 @@ const WelcomeView = () => {
 	const { apiConfiguration, currentApiConfigName, setApiConfiguration, uriScheme, machineId } = useExtensionState()
 	const { t } = useAppTranslation()
 	const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)
+	
+	// Initialize the API configuration with 'bedrock' as the provider when the component is first mounted
+	useEffect(() => {
+		if (!apiConfiguration?.apiProvider) {
+			const initialConfig = { ...apiConfiguration, apiProvider: 'bedrock' as ProviderName }
+			setApiConfiguration(initialConfig)
+		}
+	}, [apiConfiguration, setApiConfiguration])
 
 	const handleSubmit = useCallback(() => {
 		const error = apiConfiguration ? validateApiConfiguration(apiConfiguration) : undefined
