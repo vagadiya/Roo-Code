@@ -12,6 +12,7 @@ import { telemetryService } from "../../services/telemetry/TelemetryService"
 import { fetchInstructionsTool } from "../tools/fetchInstructionsTool"
 import { listFilesTool } from "../tools/listFilesTool"
 import { readFileTool } from "../tools/readFileTool"
+import { readMultipleFilesTool } from "../tools/readMultipleFilesTool"
 import { writeToFileTool } from "../tools/writeToFileTool"
 import { applyDiffTool } from "../tools/applyDiffTool"
 import { insertContentTool } from "../tools/insertContentTool"
@@ -155,6 +156,8 @@ export async function presentAssistantMessage(cline: Task) {
 						return `[${block.name} for '${block.params.command}']`
 					case "read_file":
 						return `[${block.name} for '${block.params.path}']`
+					case "read_multiple_files":
+						return `[${block.name} for '${block.params.paths}']`
 					case "fetch_instructions":
 						return `[${block.name} for '${block.params.task}']`
 					case "write_to_file":
@@ -191,6 +194,8 @@ export async function presentAssistantMessage(cline: Task) {
 						const modeName = getModeBySlug(mode, customModes)?.name ?? mode
 						return `[${block.name} in ${modeName} mode: '${message}']`
 					}
+					default:
+						return `[${block.name}]`
 				}
 			}
 
@@ -394,7 +399,9 @@ export async function presentAssistantMessage(cline: Task) {
 					break
 				case "read_file":
 					await readFileTool(cline, block, askApproval, handleError, pushToolResult, removeClosingTag)
-
+					break
+				case "read_multiple_files":
+					await readMultipleFilesTool(cline, block, askApproval, handleError, pushToolResult, removeClosingTag)
 					break
 				case "fetch_instructions":
 					await fetchInstructionsTool(cline, block, askApproval, handleError, pushToolResult)

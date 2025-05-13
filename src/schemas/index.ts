@@ -889,6 +889,7 @@ export type TokenUsage = z.infer<typeof tokenUsageSchema>
 export const toolNames = [
 	"execute_command",
 	"read_file",
+	"read_multiple_files",
 	"write_to_file",
 	"apply_diff",
 	"insert_content",

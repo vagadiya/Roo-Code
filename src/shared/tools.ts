@@ -29,6 +29,7 @@ export interface TextContent {
 export const toolParamNames = [
 	"command",
 	"path",
+	"paths",
 	"content",
 	"line_count",
 	"regex",
@@ -84,6 +85,11 @@ export interface ExecuteCommandToolUse extends ToolUse {
 export interface ReadFileToolUse extends ToolUse {
 	name: "read_file"
 	params: Partial<Pick<Record<ToolParamName, string>, "path" | "start_line" | "end_line">>
+}
+
+export interface ReadMultipleFilesToolUse extends ToolUse {
+	name: "read_multiple_files"
+	params: Partial<Pick<Record<ToolParamName, string>, "paths">>
 }
 
 export interface FetchInstructionsToolUse extends ToolUse {
@@ -166,6 +172,7 @@ export type ToolGroupConfig = {
 export const TOOL_DISPLAY_NAMES: Record<ToolName, string> = {
 	execute_command: "run commands",
 	read_file: "read files",
+	read_multiple_files: "read multiple files",
 	fetch_instructions: "fetch instructions",
 	write_to_file: "write files",
 	apply_diff: "apply changes",
@@ -188,7 +195,7 @@ export type { ToolGroup }
 // Define available tool groups.
 export const TOOL_GROUPS: Record<ToolGroup, ToolGroupConfig> = {
 	read: {
-		tools: ["read_file", "fetch_instructions", "search_files", "list_files", "list_code_definition_names"],
+		tools: ["read_file", "read_multiple_files", "fetch_instructions", "search_files", "list_files", "list_code_definition_names"],
 	},
 	edit: {
 		tools: ["apply_diff", "write_to_file", "insert_content", "search_and_replace"],

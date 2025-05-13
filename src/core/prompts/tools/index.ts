@@ -6,6 +6,7 @@ import { Mode, ModeConfig, getModeConfig, isToolAllowedForMode, getGroupName } f
 import { ToolArgs } from "./types"
 import { getExecuteCommandDescription } from "./execute-command"
 import { getReadFileDescription } from "./read-file"
+import { getReadMultipleFilesDescription } from "./read-multiple-files"
 import { getFetchInstructionsDescription } from "./fetch-instructions"
 import { getWriteToFileDescription } from "./write-to-file"
 import { getSearchFilesDescription } from "./search-files"
@@ -25,6 +26,7 @@ import { getNewTaskDescription } from "./new-task"
 const toolDescriptionMap: Record<string, (args: ToolArgs) => string | undefined> = {
 	execute_command: (args) => getExecuteCommandDescription(args),
 	read_file: (args) => getReadFileDescription(args),
+	read_multiple_files: (args) => getReadMultipleFilesDescription(args),
 	fetch_instructions: () => getFetchInstructionsDescription(),
 	write_to_file: (args) => getWriteToFileDescription(args),
 	search_files: (args) => getSearchFilesDescription(args),
@@ -109,6 +111,7 @@ export function getToolDescriptionsForMode(
 export {
 	getExecuteCommandDescription,
 	getReadFileDescription,
+	getReadMultipleFilesDescription,
 	getFetchInstructionsDescription,
 	getWriteToFileDescription,
 	getSearchFilesDescription,
