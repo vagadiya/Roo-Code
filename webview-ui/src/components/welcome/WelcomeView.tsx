@@ -20,7 +20,11 @@ const WelcomeView = () => {
 	// Initialize the API configuration with 'bedrock' as the provider when the component is first mounted
 	useEffect(() => {
 		if (!apiConfiguration?.apiProvider) {
-			const initialConfig = { ...apiConfiguration, apiProvider: 'bedrock' as ProviderName }
+			const initialConfig = {
+				...apiConfiguration,
+				apiProvider: 'bedrock' as ProviderName,
+				apiModelId: 'custom-arn'
+			}
 			setApiConfiguration(initialConfig)
 		}
 	}, [apiConfiguration, setApiConfiguration])
