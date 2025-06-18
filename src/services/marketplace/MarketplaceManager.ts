@@ -35,58 +35,71 @@ export class MarketplaceManager {
 	}
 
 	async getMarketplaceItems(): Promise<MarketplaceItemsResponse> {
-		try {
-			const errors: string[] = []
-
-			let orgSettings: OrganizationSettings | undefined
-
-			try {
-				if (CloudService.hasInstance() && CloudService.instance.isAuthenticated()) {
-					orgSettings = CloudService.instance.getOrganizationSettings()
-				}
-			} catch (orgError) {
-				console.warn("Failed to load organization settings:", orgError)
-				const orgErrorMessage = orgError instanceof Error ? orgError.message : String(orgError)
-				errors.push(`Organization settings: ${orgErrorMessage}`)
-			}
-
-			const allMarketplaceItems = await this.configLoader.loadAllItems(orgSettings?.hideMarketplaceMcps)
-			let organizationMcps: MarketplaceItem[] = []
-			let marketplaceItems = allMarketplaceItems
-
-			if (orgSettings) {
-				if (orgSettings.mcps && orgSettings.mcps.length > 0) {
-					organizationMcps = orgSettings.mcps.map(
-						(mcp: McpMarketplaceItem): MarketplaceItem => ({
-							...mcp,
-							type: "mcp" as const,
-						}),
-					)
-				}
-
-				if (orgSettings.hiddenMcps && orgSettings.hiddenMcps.length > 0) {
-					const hiddenMcpIds = new Set(orgSettings.hiddenMcps)
-					marketplaceItems = allMarketplaceItems.filter(
-						(item) => item.type !== "mcp" || !hiddenMcpIds.has(item.id),
-					)
-				}
-			}
-
-			return {
-				organizationMcps,
-				marketplaceItems,
-				errors: errors.length > 0 ? errors : undefined,
-			}
-		} catch (error) {
-			const errorMessage = error instanceof Error ? error.message : String(error)
-			console.error("Failed to load marketplace items:", error)
-
-			return {
-				organizationMcps: [],
-				marketplaceItems: [],
-				errors: [errorMessage],
-			}
+		return {
+			organizationMcps: [],
+			marketplaceItems: []
 		}
+
+		//	let orgSettings: OrganizationSettings | undefined
+        //
+		//	try {
+		//		if (CloudService.hasInstance() && CloudService.instance.isAuthenticated()) {
+		//			orgSettings = CloudService.instance.getOrganizationSettings()
+		//		}
+		//	} catch (orgError) {
+		//		console.warn("Failed to load organization settings:", orgError)
+		//		const orgErrorMessage = orgError instanceof Error ? orgError.message : String(orgError)
+		//		errors.push(`Organization settings: ${orgErrorMessage}`)
+		//	}
+
+		// 	let orgSettings: OrganizationSettings | undefined
+		// 	try {
+		// 		if (CloudService.hasInstance() && CloudService.instance.isAuthenticated()) {
+		// 			orgSettings = CloudService.instance.getOrganizationSettings()
+		// 		}
+		// 	} catch (orgError) {
+		// 		console.warn("Failed to load organization settings:", orgError)
+		// 		const orgErrorMessage = orgError instanceof Error ? orgError.message : String(orgError)
+		// 		errors.push(`Organization settings: ${orgErrorMessage}`)
+		// 	}
+
+		// 	const allMarketplaceItems = await this.configLoader.loadAllItems(orgSettings?.hideMarketplaceMcps)
+		// 	let organizationMcps: MarketplaceItem[] = []
+		// 	let marketplaceItems = allMarketplaceItems
+
+		// 	if (orgSettings) {
+		// 		if (orgSettings.mcps && orgSettings.mcps.length > 0) {
+		// 			organizationMcps = orgSettings.mcps.map(
+		// 				(mcp: McpMarketplaceItem): MarketplaceItem => ({
+		// 					...mcp,
+		// 					type: "mcp" as const,
+		// 				}),
+		// 			)
+		// 		}
+
+		// 		if (orgSettings.hiddenMcps && orgSettings.hiddenMcps.length > 0) {
+		// 			const hiddenMcpIds = new Set(orgSettings.hiddenMcps)
+		// 			marketplaceItems = allMarketplaceItems.filter(
+		// 				(item) => item.type !== "mcp" || !hiddenMcpIds.has(item.id),
+		// 			)
+		// 		}
+		// 	}
+
+		// 	return {
+		// 		organizationMcps,
+		// 		marketplaceItems,
+		// 		errors: errors.length > 0 ? errors : undefined,
+		// 	}
+		// } catch (error) {
+		// 	const errorMessage = error instanceof Error ? error.message : String(error)
+		// 	console.error("Failed to load marketplace items:", error)
+
+		// 	return {
+		// 		organizationMcps: [],
+		// 		marketplaceItems: [],
+		// 		errors: [errorMessage],
+		// 	}
+		// }
 	}
 
 	async getCurrentItems(): Promise<MarketplaceItem[]> {
