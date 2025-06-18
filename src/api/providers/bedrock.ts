@@ -970,10 +970,29 @@ export class AwsBedrockHandler extends BaseProvider implements SingleCompletionH
 		if (this.options.awsCustomArn) {
 			modelConfig = this.getModelById(this.arnInfo.modelId, this.arnInfo.modelType)
 
-			//If the user entered an ARN for a foundation-model they've done the same thing as picking from our list of options.
-			//We leave the model data matching the same as if a drop-down input method was used by not overwriting the model ID with the user input ARN
-			//Otherwise the ARN is not a foundation-model resource type that ARN should be used as the identifier in Bedrock interactions
-			if (this.arnInfo.modelType !== "foundation-model") modelConfig.id = this.options.awsCustomArn
+			// Apply custom ARN model info overrides for prompt caching
+			if (this.arnInfo.modelType !== "foundation-model") {
+				// Use the custom ARN as the model ID for Bedrock interactions
+				modelConfig.id = this.options.awsCustomArn
+
+				// Apply custom ARN model info overrides with prompt caching enabled
+				modelConfig.info = {
+					...modelConfig.info,
+					maxTokens: 8192,
+					contextWindow: 200000,
+					supportsImages: true,
+					supportsComputerUse: true,
+					supportsPromptCache: true,
+					supportsReasoningBudget: true,
+					inputPrice: 3.0,
+					outputPrice: 15.0,
+					cacheWritesPrice: 3.75,
+					cacheReadsPrice: 0.3,
+					minTokensPerCachePoint: 1024,
+					maxCachePoints: 4,
+					cachableFields: ["system", "messages", "tools"],
+				}
+			}
 		} else {
 			//a model was selected from the drop down
 			modelConfig = this.getModelById(this.options.apiModelId as string)
