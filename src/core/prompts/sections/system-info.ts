@@ -10,6 +10,7 @@ SYSTEM INFORMATION
 
 Operating System: ${osName()}
 Default Shell: ${getShell()}
+Always generate the correct commands for the default shell specified above.
 Home Directory: ${os.homedir().toPosix()}
 Current Workspace Directory: ${cwd.toPosix()}
 
