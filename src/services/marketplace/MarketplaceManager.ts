@@ -20,19 +20,21 @@ export class MarketplaceManager {
 	}
 
 	async getMarketplaceItems(): Promise<{ items: MarketplaceItem[]; errors?: string[] }> {
-		try {
-			const items = await this.configLoader.loadAllItems()
+		// try {
+		// 	const items = await this.configLoader.loadAllItems()
 
-			return { items }
-		} catch (error) {
-			const errorMessage = error instanceof Error ? error.message : String(error)
-			console.error("Failed to load marketplace items:", error)
+		// 	return { items }
+		// } catch (error) {
+		// 	const errorMessage = error instanceof Error ? error.message : String(error)
+		// 	console.error("Failed to load marketplace items:", error)
 
-			return {
-				items: [],
-				errors: [errorMessage],
-			}
-		}
+		// 	return {
+		// 		items: [],
+		// 		errors: [errorMessage],
+		// 	}
+		// }
+
+		return { items: [] }
 	}
 
 	async getCurrentItems(): Promise<MarketplaceItem[]> {
