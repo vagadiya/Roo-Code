@@ -15,7 +15,7 @@ export class CodeIndexOllamaEmbedder implements IEmbedder {
 	constructor(options: ApiHandlerOptions) {
 		// Ensure ollamaBaseUrl and ollamaModelId exist on ApiHandlerOptions or add defaults
 		this.baseUrl = options.ollamaBaseUrl || "http://localhost:11434"
-		this.defaultModelId = options.ollamaModelId || "nomic-embed-text:latest"
+		this.defaultModelId = options.ollamaModelId || "amazon-titan-embed-text-v2-0"
 	}
 
 	/**
