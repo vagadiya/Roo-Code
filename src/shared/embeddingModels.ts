@@ -25,14 +25,7 @@ export const EMBEDDING_MODEL_PROFILES: EmbeddingModelProfiles = {
 		"text-embedding-ada-002": { dimension: 1536, scoreThreshold: 0.4 },
 	},
 	ollama: {
-		"nomic-embed-text": { dimension: 768, scoreThreshold: 0.4 },
-		"nomic-embed-code": {
-			dimension: 3584,
-			scoreThreshold: 0.15,
-			queryPrefix: "Represent this query for searching relevant code: ",
-		},
-		"mxbai-embed-large": { dimension: 1024, scoreThreshold: 0.4 },
-		"all-minilm": { dimension: 384, scoreThreshold: 0.4 },
+		"amazon-titan-embed-text-v2-0": { dimension: 1024, scoreThreshold: 0.4 },
 		// Add default Ollama model if applicable, e.g.:
 		// 'default': { dimension: 768 } // Assuming a default dimension
 	},
