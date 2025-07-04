@@ -1305,7 +1305,7 @@ export const webviewMessageHandler = async (
 			await provider.postStateToWebview()
 			break
 		case "maxWorkspaceFiles":
-			const fileCount = Math.min(Math.max(0, message.value ?? 200), 500)
+			const fileCount = Math.min(Math.max(0, message.value ?? 200), 5000)
 			await updateGlobalState("maxWorkspaceFiles", fileCount)
 			await provider.postStateToWebview()
 			break
