@@ -412,14 +412,14 @@ describe("ContextManagementSettings", () => {
 			const props = {
 				...defaultProps,
 				maxOpenTabsContext: 0,
-				maxWorkspaceFiles: 500,
+				maxWorkspaceFiles: 5000,
 				setCachedStateField: mockSetCachedStateField,
 			}
 			render(<ContextManagementSettings {...props} />)
 
 			// Check boundary values are displayed
 			expect(screen.getByText("0")).toBeInTheDocument() // min open tabs
-			expect(screen.getByText("500")).toBeInTheDocument() // max workspace files
+			expect(screen.getByText("5000")).toBeInTheDocument() // max workspace files
 		})
 
 		it("handles undefined optional props gracefully", () => {
