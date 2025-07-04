@@ -129,7 +129,7 @@ export const ContextManagementSettings = ({
 					<div className="flex items-center gap-2">
 						<Slider
 							min={0}
-							max={500}
+							max={5000}
 							step={1}
 							value={[maxWorkspaceFiles ?? 200]}
 							onValueChange={([value]) => setCachedStateField("maxWorkspaceFiles", value)}
