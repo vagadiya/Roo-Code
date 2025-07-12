@@ -80,6 +80,9 @@ export class DirectoryScanner implements IDirectoryScanner {
 			return scannerExtensions.includes(ext) && !this.ignoreInstance.ignores(relativeFilePath)
 		})
 
+		// Log the number of files that will be processed
+		console.log(`Scanning ${supportedPaths.length} files in workspace ${scanWorkspace}`)
+
 		// Initialize tracking variables
 		const processedFiles = new Set<string>()
 		const codeBlocks: CodeBlock[] = []
