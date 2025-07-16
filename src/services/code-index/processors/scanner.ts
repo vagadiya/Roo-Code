@@ -84,6 +84,16 @@ export class DirectoryScanner implements IDirectoryScanner {
 			return scannerExtensions.includes(ext) && !this.ignoreInstance.ignores(relativeFilePath)
 		})
 
+		// Log the number of files that will be processed
+		console.info(`Scanning ${supportedPaths.length} files in workspace ${scanWorkspace}`)
+		// Log the constants
+		console.info(`Constants: MAX_LIST_FILES_LIMIT: ${MAX_LIST_FILES_LIMIT_CODE_INDEX}`)
+		console.info(`Constants: MAX_BATCH_RETRIES: ${MAX_BATCH_RETRIES}`)
+		console.info(`Constants: INITIAL_RETRY_DELAY_MS: ${INITIAL_RETRY_DELAY_MS}`)
+		console.info(`Constants: BATCH_SEGMENT_THRESHOLD: ${BATCH_SEGMENT_THRESHOLD}`)
+		console.info(`Constants: PARSING_CONCURRENCY: ${PARSING_CONCURRENCY}`)
+		console.info(`Constants: BATCH_PROCESSING_CONCURRENCY: ${BATCH_PROCESSING_CONCURRENCY}`)
+
 		// Initialize tracking variables
 		const processedFiles = new Set<string>()
 		let processedCount = 0
