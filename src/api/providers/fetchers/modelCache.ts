@@ -15,12 +15,12 @@ import { getCacheDirectoryPath } from "../../../utils/storage"
 import type { RouterName, ModelRecord } from "../../../shared/api"
 import { fileExistsAtPath } from "../../../utils/fs"
 
-import { getOpenRouterModels } from "./openrouter"
-import { getVercelAiGatewayModels } from "./vercel-ai-gateway"
-import { getRequestyModels } from "./requesty"
-import { getGlamaModels } from "./glama"
-import { getUnboundModels } from "./unbound"
-import { getLiteLLMModels } from "./litellm"
+// import { getOpenRouterModels } from "./openrouter"
+// import { getVercelAiGatewayModels } from "./vercel-ai-gateway"
+// import { getRequestyModels } from "./requesty"
+// import { getGlamaModels } from "./glama"
+// import { getUnboundModels } from "./unbound"
+// import { getLiteLLMModels } from "./litellm"
 import { GetModelsOptions } from "../../../shared/api"
 import { getOllamaModels } from "./ollama"
 import { getLMStudioModels } from "./lmstudio"
@@ -142,6 +142,9 @@ export const getModels = async (options: GetModelsOptions): Promise<ModelRecord>
 
 		// Cache the fetched models (even if empty, to signify a successful fetch with no models).
 		memoryCache.set(provider, models)
+		// await writeModels(provider, models).catch((err) =>
+		// 	console.error(`[getModels] Error writing ${provider} models to file cache:`, err),
+		// )
 
 		await writeModels(provider, models).catch((err) =>
 			console.error(`[MODEL_CACHE] Error writing ${provider} models to file cache:`, err),
