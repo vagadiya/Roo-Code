@@ -34,6 +34,11 @@ import { getModelParams } from "../transform/model-params"
 import { shouldUseReasoningBudget } from "../../shared/api"
 import type { SingleCompletionHandler, ApiHandlerCreateMessageMetadata } from "../index"
 
+import { NodeHttpHandler } from "@smithy/node-http-handler";
+import { HttpsProxyAgent } from 'https-proxy-agent';
+const PROXY_URL = 'http://proxy.jpmchase.net:10443'
+
+
 /************************************************************************************
  *
  *     TYPES
@@ -248,6 +253,12 @@ export class AwsBedrockHandler extends BaseProvider implements SingleCompletionH
 				...(this.options.awsSessionToken ? { sessionToken: this.options.awsSessionToken } : {}),
 			}
 		}
+
+		const proxyAgent = new HttpsProxyAgent(PROXY_URL);
+		clientConfig.requestHandler = new NodeHttpHandler({
+			httpAgent: proxyAgent,
+			httpsAgent: proxyAgent,
+		})
 
 		this.client = new BedrockRuntimeClient(clientConfig)
 	}
