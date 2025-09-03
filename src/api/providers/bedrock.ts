@@ -31,7 +31,7 @@ import { MultiPointStrategy } from "../transform/cache-strategy/multi-point-stra
 import { ModelInfo as CacheModelInfo } from "../transform/cache-strategy/types"
 import { convertToBedrockConverseMessages as sharedConverter } from "../transform/bedrock-converse-format"
 import { getModelParams } from "../transform/model-params"
-import { shouldUseReasoningBudget } from "../../shared/api"
+import { APPROVED_BEDROCK_ARNS, shouldUseReasoningBudget } from "../../shared/api"
 import type { SingleCompletionHandler, ApiHandlerCreateMessageMetadata } from "../index"
 
 import { NodeHttpHandler } from "@smithy/node-http-handler";
@@ -474,6 +474,10 @@ export class AwsBedrockHandler extends BaseProvider implements SingleCompletionH
 						//However, we want to keep the id of the model to be the ID for the router for
 						//subsequent requests so they are sent back through the router
 						let invokedArnInfo = this.parseArn(streamEvent.trace.promptRouter.invokedModelId)
+						if (!invokedArnInfo.isValid) {
+							let errorMessage = "Invalid ARN format. ARN should follow the pattern: arn:aws:bedrock:region:account-id:resource-type/resource-name"
+							throw new Error("INVALID_ARN_FORMAT:" + errorMessage)
+						}
 						let invokedModel = this.getModelById(invokedArnInfo.modelId as string, invokedArnInfo.modelType)
 						if (invokedModel) {
 							invokedModel.id = modelConfig.id
@@ -833,6 +837,18 @@ export class AwsBedrockHandler extends BaseProvider implements SingleCompletionH
 		 * match[3] - The resource type (e.g., "foundation-model")
 		 * match[4] - The resource ID (e.g., "anthropic.claude-3-sonnet-20240229-v1:0")
 		 */
+
+		// Check if the ARN is in the approved list
+		if (!APPROVED_BEDROCK_ARNS.includes(arn)) {
+			return {
+				isValid: false,
+				region: undefined,
+				modelType: undefined,
+				modelId: undefined,
+				errorMessage: "Invalid ARN.",
+				crossRegionInference: false,
+			};
+		}
 
 		const arnRegex = /^arn:aws:(?:bedrock|sagemaker):([^:]+):([^:]*):(?:([^\/]+)\/([\w\.\-:]+)|([^\/]+))$/
 		let match = arn.match(arnRegex)
