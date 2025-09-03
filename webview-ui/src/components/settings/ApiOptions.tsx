@@ -740,12 +740,17 @@ const ApiOptions = ({
 					{/* Only show model info if not deprecated */}
 					{!selectedModelInfo?.deprecated && (
 						<ModelInfoView
+							key={
+								selectedProvider === "bedrock" && selectedModelId === "custom-arn"
+									? `bedrock-custom-arn-${apiConfiguration?.awsCustomArn || ""}`
+									: undefined
+							}
 							apiProvider={selectedProvider}
 							selectedModelId={selectedModelId}
 							modelInfo={selectedModelInfo}
 							isDescriptionExpanded={isDescriptionExpanded}
 							setIsDescriptionExpanded={setIsDescriptionExpanded}
-						/>
+                        />
 					)}
 				</>
 			)}

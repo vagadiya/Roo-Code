@@ -31,8 +31,13 @@ import { MultiPointStrategy } from "../transform/cache-strategy/multi-point-stra
 import { ModelInfo as CacheModelInfo } from "../transform/cache-strategy/types"
 import { convertToBedrockConverseMessages as sharedConverter } from "../transform/bedrock-converse-format"
 import { getModelParams } from "../transform/model-params"
-import { shouldUseReasoningBudget } from "../../shared/api"
+import { APPROVED_BEDROCK_ARNS, shouldUseReasoningBudget } from "../../shared/api"
 import type { SingleCompletionHandler, ApiHandlerCreateMessageMetadata } from "../index"
+
+import { NodeHttpHandler } from "@smithy/node-http-handler";
+import { HttpsProxyAgent } from 'https-proxy-agent';
+const PROXY_URL = 'http://proxy.jpmchase.net:10443'
+
 
 /************************************************************************************
  *
@@ -248,6 +253,12 @@ export class AwsBedrockHandler extends BaseProvider implements SingleCompletionH
 			}
 		}
 
+		const proxyAgent = new HttpsProxyAgent(PROXY_URL);
+		clientConfig.requestHandler = new NodeHttpHandler({
+			httpAgent: proxyAgent,
+			httpsAgent: proxyAgent,
+		})
+
 		this.client = new BedrockRuntimeClient(clientConfig)
 	}
 
@@ -459,6 +470,10 @@ export class AwsBedrockHandler extends BaseProvider implements SingleCompletionH
 						//However, we want to keep the id of the model to be the ID for the router for
 						//subsequent requests so they are sent back through the router
 						let invokedArnInfo = this.parseArn(streamEvent.trace.promptRouter.invokedModelId)
+						if (!invokedArnInfo.isValid) {
+							let errorMessage = "Invalid ARN format. ARN should follow the pattern: arn:aws:bedrock:region:account-id:resource-type/resource-name"
+							throw new Error("INVALID_ARN_FORMAT:" + errorMessage)
+						}
 						let invokedModel = this.getModelById(invokedArnInfo.modelId as string, invokedArnInfo.modelType)
 						if (invokedModel) {
 							invokedModel.id = modelConfig.id
@@ -818,6 +833,18 @@ export class AwsBedrockHandler extends BaseProvider implements SingleCompletionH
 		 * match[4] - The resource ID (e.g., "anthropic.claude-3-sonnet-20240229-v1:0")
 		 */
 
+		// Check if the ARN is in the approved list
+		if (!APPROVED_BEDROCK_ARNS.includes(arn)) {
+			return {
+				isValid: false,
+				region: undefined,
+				modelType: undefined,
+				modelId: undefined,
+				errorMessage: "Invalid ARN.",
+				crossRegionInference: false,
+			};
+		}
+
 		const arnRegex = /^arn:aws:(?:bedrock|sagemaker):([^:]+):([^:]*):(?:([^\/]+)\/([\w\.\-:]+)|([^\/]+))$/
 		let match = arn.match(arnRegex)
 
@@ -954,10 +981,113 @@ export class AwsBedrockHandler extends BaseProvider implements SingleCompletionH
 		if (this.options.awsCustomArn) {
 			modelConfig = this.getModelById(this.arnInfo.modelId, this.arnInfo.modelType)
 
-			//If the user entered an ARN for a foundation-model they've done the same thing as picking from our list of options.
-			//We leave the model data matching the same as if a drop-down input method was used by not overwriting the model ID with the user input ARN
-			//Otherwise the ARN is not a foundation-model resource type that ARN should be used as the identifier in Bedrock interactions
-			if (this.arnInfo.modelType !== "foundation-model") modelConfig.id = this.options.awsCustomArn
+			// Apply custom ARN model info overrides for prompt caching
+			if (this.arnInfo.modelType !== "foundation-model") {
+				// Use the custom ARN as the model ID for Bedrock interactions
+				modelConfig.id = this.options.awsCustomArn
+
+				// Apply per-ARN model info overrides with prompt caching enabled
+				// Use the existing configuration values as-is for each application inference profile ARN
+				// Claude Sonnet 4 and Claude Sonnet 3.7 share the same configuration
+				switch (this.options.awsCustomArn) {
+					// Claude Sonnet 4
+					case "arn:aws:bedrock:us-east-1:344087272340:application-inference-profile/jdcn03gofzvd":
+					// Claude Sonnet 3.7
+					case "arn:aws:bedrock:us-east-1:344087272340:application-inference-profile/o4ztgzanj4u7":
+						modelConfig.info = {
+							...modelConfig.info,
+							maxTokens: 8192,
+							contextWindow: 200000,
+							supportsImages: true,
+							supportsComputerUse: true,
+							supportsPromptCache: true,
+							supportsReasoningBudget: true,
+							inputPrice: 3.0,
+							outputPrice: 15.0,
+							cacheWritesPrice: 3.75,
+							cacheReadsPrice: 0.3,
+							minTokensPerCachePoint: 1024,
+							maxCachePoints: 4,
+							cachableFields: ["system", "messages", "tools"],
+						}
+						break
+					// Claude Opus 4.1
+					case "arn:aws:bedrock:us-east-1:344087272340:application-inference-profile/a4ed7vmkaldf":
+						modelConfig.info = {
+							...modelConfig.info,
+							maxTokens: 8192,
+							contextWindow: 200000,
+							supportsImages: true,
+							supportsComputerUse: true,
+							supportsPromptCache: true,
+							supportsReasoningBudget: true,
+							inputPrice: 15.0,
+							outputPrice: 75.0,
+							cacheWritesPrice: 18.75,
+							cacheReadsPrice: 1.5,
+							minTokensPerCachePoint: 1024,
+							maxCachePoints: 4,
+							cachableFields: ["system", "messages", "tools"],
+						}
+						break
+					// Claude Sonnet 3.5
+					case "arn:aws:bedrock:us-east-1:344087272340:application-inference-profile/lnm56v9is2ym":
+						modelConfig.info = {
+							...modelConfig.info,
+							maxTokens: 8192,
+							contextWindow: 200000,
+							supportsImages: true,
+							supportsComputerUse: true,
+							supportsPromptCache: false,
+							supportsReasoningBudget: false,
+							inputPrice: 3.0,
+							outputPrice: 15.0,
+							cacheWritesPrice: 3.75,
+							cacheReadsPrice: 0.3,
+							minTokensPerCachePoint: 1024,
+							maxCachePoints: 4,
+							cachableFields: ["system", "messages", "tools"],
+						}
+						break
+					// Claude Haiku 3.5
+					case "arn:aws:bedrock:us-east-1:344087272340:application-inference-profile/rwwfypv8botg":
+						modelConfig.info = {
+							...modelConfig.info,
+							maxTokens: 8192,
+							contextWindow: 200000,
+							supportsImages: false,
+							supportsComputerUse: false,
+							supportsPromptCache: true,
+							supportsReasoningBudget: false,
+							inputPrice: 0.8,
+							outputPrice: 4.0,
+							cacheWritesPrice: 1.0,
+							cacheReadsPrice: 0.08,
+							minTokensPerCachePoint: 2048,
+							maxCachePoints: 4,
+							cachableFields: ["system", "messages", "tools"],
+						}
+						break
+					default:
+						// Fallback: retain existing behavior for any other approved ARN
+						modelConfig.info = {
+							...modelConfig.info,
+							maxTokens: 8192,
+							contextWindow: 200000,
+							supportsImages: true,
+							supportsComputerUse: true,
+							supportsPromptCache: true,
+							supportsReasoningBudget: true,
+							inputPrice: 3.0,
+							outputPrice: 15.0,
+							cacheWritesPrice: 3.75,
+							cacheReadsPrice: 0.3,
+							minTokensPerCachePoint: 1024,
+							maxCachePoints: 4,
+							cachableFields: ["system", "messages", "tools"],
+						}
+				}
+			}
 		} else {
 			//a model was selected from the drop down
 			modelConfig = this.getModelById(this.options.apiModelId as string)

@@ -170,3 +170,17 @@ const dynamicProviderExtras = {
 export type GetModelsOptions = {
 	[P in keyof typeof dynamicProviderExtras]: ({ provider: P } & (typeof dynamicProviderExtras)[P]) & CommonFetchParams
 }[RouterName]
+
+export const APPROVED_BEDROCK_ARNS: string[] = [
+  "arn:aws:bedrock:us-east-1:344087272340:application-inference-profile/o4ztgzanj4u7",
+  "arn:aws:bedrock:us-east-1:344087272340:application-inference-profile/lnm56v9is2ym",
+  "arn:aws:bedrock:us-east-1:344087272340:application-inference-profile/rwwfypv8botg",
+  "arn:aws:bedrock:us-east-1:344087272340:application-inference-profile/jdcn03gofzvd",
+  "arn:aws:bedrock:us-east-1:344087272340:application-inference-profile/a4ed7vmkaldf",
+//   "arn:aws:bedrock:us-east-1:396913734285:application-inference-profile/7f9boiz9ouig",
+//   "arn:aws:bedrock:us-east-1:396913734285:application-inference-profile/of8cznqafjnb",
+//   "arn:aws:bedrock:us-east-1:396913734285:application-inference-profile/1cr3yg5f8l99",
+//   "arn:aws:bedrock:us-east-1:272424424341:application-inference-profile/hspmi9my3rdw",
+//   "arn:aws:bedrock:us-east-1:272424424341:application-inference-profile/xxn0s6vywtex",
+//   "arn:aws:bedrock:us-east-1:272424424341:application-inference-profile/3u8vfdgyypba",
+];
