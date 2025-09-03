@@ -991,22 +991,106 @@ export class AwsBedrockHandler extends BaseProvider implements SingleCompletionH
 				// Use the custom ARN as the model ID for Bedrock interactions
 				modelConfig.id = this.options.awsCustomArn
 
-				// Apply custom ARN model info overrides with prompt caching enabled
-				modelConfig.info = {
-					...modelConfig.info,
-					maxTokens: 8192,
-					contextWindow: 200000,
-					supportsImages: true,
-					supportsComputerUse: true,
-					supportsPromptCache: true,
-					supportsReasoningBudget: true,
-					inputPrice: 3.0,
-					outputPrice: 15.0,
-					cacheWritesPrice: 3.75,
-					cacheReadsPrice: 0.3,
-					minTokensPerCachePoint: 1024,
-					maxCachePoints: 4,
-					cachableFields: ["system", "messages", "tools"],
+				// Apply per-ARN model info overrides with prompt caching enabled
+				// Use the existing configuration values as-is for each application inference profile ARN
+				// Claude Sonnet 4 and Claude Sonnet 3.7 share the same configuration
+				switch (this.options.awsCustomArn) {
+					// Claude Sonnet 4
+					case "arn:aws:bedrock:us-east-1:344087272340:application-inference-profile/jdcn03gofzvd":
+					// Claude Sonnet 3.7
+					case "arn:aws:bedrock:us-east-1:344087272340:application-inference-profile/o4ztgzanj4u7":
+						modelConfig.info = {
+							...modelConfig.info,
+							maxTokens: 8192,
+							contextWindow: 200000,
+							supportsImages: true,
+							supportsComputerUse: true,
+							supportsPromptCache: true,
+							supportsReasoningBudget: true,
+							inputPrice: 3.0,
+							outputPrice: 15.0,
+							cacheWritesPrice: 3.75,
+							cacheReadsPrice: 0.3,
+							minTokensPerCachePoint: 1024,
+							maxCachePoints: 4,
+							cachableFields: ["system", "messages", "tools"],
+						}
+						break
+					// Claude Opus 4.1
+					case "arn:aws:bedrock:us-east-1:344087272340:application-inference-profile/a4ed7vmkaldf":
+						modelConfig.info = {
+							...modelConfig.info,
+							maxTokens: 8192,
+							contextWindow: 200000,
+							supportsImages: true,
+							supportsComputerUse: true,
+							supportsPromptCache: true,
+							supportsReasoningBudget: true,
+							inputPrice: 15.0,
+							outputPrice: 75.0,
+							cacheWritesPrice: 18.75,
+							cacheReadsPrice: 1.5,
+							minTokensPerCachePoint: 1024,
+							maxCachePoints: 4,
+							cachableFields: ["system", "messages", "tools"],
+						}
+						break
+					// Claude Sonnet 3.5
+					case "arn:aws:bedrock:us-east-1:344087272340:application-inference-profile/lnm56v9is2ym":
+						modelConfig.info = {
+							...modelConfig.info,
+							maxTokens: 8192,
+							contextWindow: 200000,
+							supportsImages: true,
+							supportsComputerUse: true,
+							supportsPromptCache: false,
+							supportsReasoningBudget: false,
+							inputPrice: 3.0,
+							outputPrice: 15.0,
+							cacheWritesPrice: 3.75,
+							cacheReadsPrice: 0.3,
+							minTokensPerCachePoint: 1024,
+							maxCachePoints: 4,
+							cachableFields: ["system", "messages", "tools"],
+						}
+						break
+					// Claude Haiku 3.5
+					case "arn:aws:bedrock:us-east-1:344087272340:application-inference-profile/rwwfypv8botg":
+						modelConfig.info = {
+							...modelConfig.info,
+							maxTokens: 8192,
+							contextWindow: 200000,
+							supportsImages: false,
+							supportsComputerUse: false,
+							supportsPromptCache: true,
+							supportsReasoningBudget: false,
+							inputPrice: 0.8,
+							outputPrice: 4.0,
+							cacheWritesPrice: 1.0,
+							cacheReadsPrice: 0.08,
+							minTokensPerCachePoint: 2048,
+							maxCachePoints: 4,
+							cachableFields: ["system", "messages", "tools"],
+						}
+						break
+					default:
+						// Fallback: retain existing behavior for any other approved ARN
+						modelConfig.info = {
+							...modelConfig.info,
+							maxTokens: 8192,
+							contextWindow: 200000,
+							supportsImages: true,
+							supportsComputerUse: true,
+							supportsPromptCache: true,
+							supportsReasoningBudget: true,
+							inputPrice: 3.0,
+							outputPrice: 15.0,
+							cacheWritesPrice: 3.75,
+							cacheReadsPrice: 0.3,
+							minTokensPerCachePoint: 1024,
+							maxCachePoints: 4,
+							cachableFields: ["system", "messages", "tools"],
+						}
 				}
 			}
 		} else {

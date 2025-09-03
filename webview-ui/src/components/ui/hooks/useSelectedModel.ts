@@ -184,6 +184,105 @@ function getSelectedModel({
 			const id = apiConfiguration.apiModelId ?? bedrockDefaultModelId
 			const baseInfo = bedrockModels[id as keyof typeof bedrockModels]
 
+			// If apiModelId is a Bedrock ARN, map it to a fixed ModelInfo using existing values
+			if (id.startsWith("arn:aws:bedrock:")) {
+				let info: ModelInfo | undefined
+				switch (id) {
+					// Claude Sonnet 4
+					case "arn:aws:bedrock:us-east-1:344087272340:application-inference-profile/jdcn03gofzvd":
+					// Claude Sonnet 3.7
+					case "arn:aws:bedrock:us-east-1:344087272340:application-inference-profile/o4ztgzanj4u7":
+						info = {
+							maxTokens: 8192,
+							contextWindow: 200_000,
+							supportsImages: true,
+							supportsComputerUse: true,
+							supportsPromptCache: true,
+							supportsReasoningBudget: true,
+							inputPrice: 3.0,
+							outputPrice: 15.0,
+							cacheWritesPrice: 3.75,
+							cacheReadsPrice: 0.3,
+							minTokensPerCachePoint: 1024,
+							maxCachePoints: 4,
+							cachableFields: ["system", "messages", "tools"],
+						}
+						break
+					// Claude Opus 4.1
+					case "arn:aws:bedrock:us-east-1:344087272340:application-inference-profile/a4ed7vmkaldf":
+						info = {
+							maxTokens: 8192,
+							contextWindow: 200_000,
+							supportsImages: true,
+							supportsComputerUse: true,
+							supportsPromptCache: true,
+							supportsReasoningBudget: true,
+							inputPrice: 15.0,
+							outputPrice: 75.0,
+							cacheWritesPrice: 18.75,
+							cacheReadsPrice: 1.5,
+							minTokensPerCachePoint: 1024,
+							maxCachePoints: 4,
+							cachableFields: ["system", "messages", "tools"],
+						}
+						break
+					// Claude Sonnet 3.5
+					case "arn:aws:bedrock:us-east-1:344087272340:application-inference-profile/lnm56v9is2ym":
+						info = {
+							maxTokens: 8192,
+							contextWindow: 200_000,
+							supportsImages: true,
+							supportsComputerUse: true,
+							supportsPromptCache: false,
+							supportsReasoningBudget: false,
+							inputPrice: 3.0,
+							outputPrice: 15.0,
+							cacheWritesPrice: 3.75,
+							cacheReadsPrice: 0.3,
+							minTokensPerCachePoint: 1024,
+							maxCachePoints: 4,
+							cachableFields: ["system", "messages", "tools"],
+						}
+						break
+					// Claude Haiku 3.5
+					case "arn:aws:bedrock:us-east-1:344087272340:application-inference-profile/rwwfypv8botg":
+						info = {
+							maxTokens: 8192,
+							contextWindow: 200_000,
+							supportsImages: false,
+							supportsComputerUse: false,
+							supportsPromptCache: true,
+							supportsReasoningBudget: false,
+							inputPrice: 0.8,
+							outputPrice: 4.0,
+							cacheWritesPrice: 1.0,
+							cacheReadsPrice: 0.08,
+							minTokensPerCachePoint: 2048,
+							maxCachePoints: 4,
+							cachableFields: ["system", "messages", "tools"],
+						}
+						break
+					default:
+						// Fallback to existing generic custom ARN values
+						info = {
+							maxTokens: 8192,
+							contextWindow: 200_000,
+							supportsImages: true,
+							supportsComputerUse: true,
+							supportsPromptCache: true,
+							supportsReasoningBudget: true,
+							inputPrice: 3.0,
+							outputPrice: 15.0,
+							cacheWritesPrice: 3.75,
+							cacheReadsPrice: 0.3,
+							minTokensPerCachePoint: 1024,
+							maxCachePoints: 4,
+							cachableFields: ["system", "messages", "tools"],
+						}
+				}
+				return { id, info }
+			}
+
 			// Special case for custom ARN.
 			if (id === "custom-arn") {
 				return {
