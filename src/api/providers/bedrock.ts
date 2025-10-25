@@ -35,10 +35,9 @@ import { getModelParams } from "../transform/model-params"
 import { APPROVED_BEDROCK_ARNS, shouldUseReasoningBudget } from "../../shared/api"
 import type { SingleCompletionHandler, ApiHandlerCreateMessageMetadata } from "../index"
 
-import { NodeHttpHandler } from "@smithy/node-http-handler";
-import { HttpsProxyAgent } from 'https-proxy-agent';
-const PROXY_URL = 'http://proxy.jpmchase.net:10443'
-
+import { NodeHttpHandler } from "@smithy/node-http-handler"
+import { HttpsProxyAgent } from "https-proxy-agent"
+const PROXY_URL = "http://proxy.jpmchase.net:10443"
 
 /************************************************************************************
  *
@@ -255,7 +254,7 @@ export class AwsBedrockHandler extends BaseProvider implements SingleCompletionH
 			}
 		}
 
-		const proxyAgent = new HttpsProxyAgent(PROXY_URL);
+		const proxyAgent = new HttpsProxyAgent(PROXY_URL)
 		clientConfig.requestHandler = new NodeHttpHandler({
 			httpAgent: proxyAgent,
 			httpsAgent: proxyAgent,
@@ -473,7 +472,8 @@ export class AwsBedrockHandler extends BaseProvider implements SingleCompletionH
 						//subsequent requests so they are sent back through the router
 						let invokedArnInfo = this.parseArn(streamEvent.trace.promptRouter.invokedModelId)
 						if (!invokedArnInfo.isValid) {
-							let errorMessage = "Invalid ARN format. ARN should follow the pattern: arn:aws:bedrock:region:account-id:resource-type/resource-name"
+							let errorMessage =
+								"Invalid ARN format. ARN should follow the pattern: arn:aws:bedrock:region:account-id:resource-type/resource-name"
 							throw new Error("INVALID_ARN_FORMAT:" + errorMessage)
 						}
 						let invokedModel = this.getModelById(invokedArnInfo.modelId as string, invokedArnInfo.modelType)
@@ -844,7 +844,7 @@ export class AwsBedrockHandler extends BaseProvider implements SingleCompletionH
 				modelId: undefined,
 				errorMessage: "Invalid ARN.",
 				crossRegionInference: false,
-			};
+			}
 		}
 
 		const arnRegex = /^arn:aws:(?:bedrock|sagemaker):([^:]+):([^:]*):(?:([^\/]+)\/([\w\.\-:]+)|([^\/]+))$/
@@ -992,6 +992,8 @@ export class AwsBedrockHandler extends BaseProvider implements SingleCompletionH
 				// Use the existing configuration values as-is for each application inference profile ARN
 				// Claude Sonnet 4 and Claude Sonnet 3.7 share the same configuration
 				switch (this.options.awsCustomArn) {
+					// Claude Sonnet 4.5
+					case "arn:aws:bedrock:us-east-1:344087272340:application-inference-profile/oc7x2oy4tttt":
 					// Claude Sonnet 4
 					case "arn:aws:bedrock:us-east-1:344087272340:application-inference-profile/jdcn03gofzvd":
 					// Claude Sonnet 3.7

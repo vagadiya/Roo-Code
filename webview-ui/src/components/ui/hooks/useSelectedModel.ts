@@ -196,6 +196,8 @@ function getSelectedModel({
 			if (id.startsWith("arn:aws:bedrock:")) {
 				let info: ModelInfo | undefined
 				switch (id) {
+					// Claude Sonnet 4.5
+					case "arn:aws:bedrock:us-east-1:344087272340:application-inference-profile/oc7x2oy4tttt":
 					// Claude Sonnet 4
 					case "arn:aws:bedrock:us-east-1:344087272340:application-inference-profile/jdcn03gofzvd":
 					// Claude Sonnet 3.7
@@ -297,6 +299,8 @@ function getSelectedModel({
 				if (arn && arn.startsWith("arn:aws:bedrock:")) {
 					let info: ModelInfo | undefined
 					switch (arn) {
+						// Claude Sonnet 4.5
+						case "arn:aws:bedrock:us-east-1:344087272340:application-inference-profile/oc7x2oy4tttt":
 						// Claude Sonnet 4
 						case "arn:aws:bedrock:us-east-1:344087272340:application-inference-profile/jdcn03gofzvd":
 						// Claude Sonnet 3.7
