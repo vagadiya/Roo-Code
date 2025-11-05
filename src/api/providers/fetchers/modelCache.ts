@@ -116,7 +116,7 @@ export const getModels = async (options: GetModelsOptions): Promise<ModelRecord>
 		// 		const exhaustiveCheck: never = provider
 		// 		throw new Error(`Unknown provider: ${exhaustiveCheck}`)
 		// 	}
-		}
+		// }
 
 		// Cache the fetched models (even if empty, to signify a successful fetch with no models).
 		memoryCache.set(provider, models)
