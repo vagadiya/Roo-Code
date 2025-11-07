@@ -259,7 +259,7 @@ const App = () => {
 			<ChatView
 				ref={chatViewRef}
 				isHidden={tab !== "chat"}
-				showAnnouncement={showAnnouncement}
+				showAnnouncement={false}
 				hideAnnouncement={() => setShowAnnouncement(false)}
 			/>
 			{deleteMessageDialogState.hasCheckpoint ? (
