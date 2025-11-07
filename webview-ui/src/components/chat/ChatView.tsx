@@ -1401,10 +1401,7 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 			) : (
 				<div className="flex flex-col h-full justify-center p-6 min-h-0 overflow-y-auto gap-4 relative">
 					<div className="flex flex-col items-start gap-2 justify-center h-full min-[400px]:px-6">
-						<VersionIndicator
-							onClick={() => setShowAnnouncementModal(true)}
-							className="absolute top-2 right-3 z-10"
-						/>
+						<VersionIndicator onClick={() => {}} className="absolute top-2 right-3 z-10" />
 						<div className="flex flex-col gap-4 w-full">
 							<RooHero />
 							{/* Show RooTips when authenticated or when user is new */}
@@ -1413,7 +1410,7 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 							{taskHistory.length > 0 && <HistoryPreview />}
 						</div>
 						{/* Logged out users should see a one-time upsell, but not for brand new users */}
-						{!cloudIsAuthenticated && taskHistory.length >= 6 && (
+						{/* {!cloudIsAuthenticated && taskHistory.length >= 6 && (
 							<DismissibleUpsell
 								upsellId="taskList2"
 								icon={<Cloud className="size-5 mt-0.5 shrink-0" />}
@@ -1427,7 +1424,7 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 									}}
 								/>
 							</DismissibleUpsell>
-						)}
+						)} */}
 					</div>
 				</div>
 			)}
