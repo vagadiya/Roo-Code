@@ -1548,7 +1548,49 @@ export const webviewMessageHandler = async (
 			}
 			break
 		}
-
+		case "screenshotQuality":
+			await updateGlobalState("screenshotQuality", message.value)
+			await provider.postStateToWebview()
+			break
+		case "maxOpenTabsContext":
+			const tabCount = Math.min(Math.max(0, message.value ?? 20), 500)
+			await updateGlobalState("maxOpenTabsContext", tabCount)
+			await provider.postStateToWebview()
+			break
+		case "maxWorkspaceFiles":
+			const fileCount = Math.min(Math.max(0, message.value ?? 200), 5000)
+			await updateGlobalState("maxWorkspaceFiles", fileCount)
+			await provider.postStateToWebview()
+			break
+		case "alwaysAllowFollowupQuestions":
+			await updateGlobalState("alwaysAllowFollowupQuestions", message.bool ?? false)
+			await provider.postStateToWebview()
+			break
+		case "followupAutoApproveTimeoutMs":
+			await updateGlobalState("followupAutoApproveTimeoutMs", message.value)
+			await provider.postStateToWebview()
+			break
+		case "browserToolEnabled":
+			await updateGlobalState("browserToolEnabled", message.bool ?? true)
+			await provider.postStateToWebview()
+			break
+		case "language":
+			changeLanguage(message.text ?? "en")
+			await updateGlobalState("language", message.text as Language)
+			await provider.postStateToWebview()
+			break
+		case "openRouterImageApiKey":
+			await provider.contextProxy.setValue("openRouterImageApiKey", message.text)
+			await provider.postStateToWebview()
+			break
+		case "openRouterImageGenerationSelectedModel":
+			await provider.contextProxy.setValue("openRouterImageGenerationSelectedModel", message.text)
+			await provider.postStateToWebview()
+			break
+		case "showRooIgnoredFiles":
+			await updateGlobalState("showRooIgnoredFiles", message.bool ?? false)
+			await provider.postStateToWebview()
+			break
 		case "hasOpenedModeSelector":
 			await updateGlobalState("hasOpenedModeSelector", message.bool ?? true)
 			await provider.postStateToWebview()
