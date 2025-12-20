@@ -16,6 +16,8 @@ import {
 
 import { BaseTelemetryClient } from "./BaseTelemetryClient"
 
+const DISABLE_POSTHOG_TELEMETRY = true
+
 /**
  * PostHogTelemetryClient handles telemetry event tracking for the Roo Code extension.
  * Uses PostHog analytics to track user interactions and system events.
@@ -36,7 +38,17 @@ export class PostHogTelemetryClient extends BaseTelemetryClient {
 			debug,
 		)
 
-		this.client = new PostHog(process.env.POSTHOG_API_KEY || "", { host: "https://ph.roocode.com" })
+		if (DISABLE_POSTHOG_TELEMETRY) {
+			this.client = {
+				capture: () => undefined,
+				captureException: () => undefined,
+				optIn: () => undefined,
+				optOut: () => undefined,
+				shutdown: async () => undefined,
+			} as unknown as PostHog
+		} else {
+			this.client = new PostHog(process.env.POSTHOG_API_KEY || "", { host: "https://ph.roocode.com" })
+		}
 	}
 
 	/**
@@ -53,6 +65,9 @@ export class PostHogTelemetryClient extends BaseTelemetryClient {
 	}
 
 	public override async capture(event: TelemetryEvent): Promise<void> {
+		if (DISABLE_POSTHOG_TELEMETRY) {
+			return
+		}
 		if (!this.isTelemetryEnabled() || !this.isEventCapturable(event.event)) {
 			if (this.debug) {
 				console.info(`[PostHogTelemetryClient#capture] Skipping event: ${event.event}`)
@@ -78,6 +93,9 @@ export class PostHogTelemetryClient extends BaseTelemetryClient {
 		error: Error,
 		additionalProperties?: Record<string, unknown>,
 	): Promise<void> {
+		if (DISABLE_POSTHOG_TELEMETRY) {
+			return
+		}
 		if (!this.isTelemetryEnabled()) {
 			if (this.debug) {
 				console.info(`[PostHogTelemetryClient#captureException] Skipping exception: ${error.message}`)
@@ -145,6 +163,10 @@ export class PostHogTelemetryClient extends BaseTelemetryClient {
 	 * @param didUserOptIn Whether the user has explicitly opted into telemetry
 	 */
 	public override updateTelemetryState(didUserOptIn: boolean): void {
+		if (DISABLE_POSTHOG_TELEMETRY) {
+			this.telemetryEnabled = false
+			return
+		}
 		this.telemetryEnabled = false
 
 		// First check global telemetry level - telemetry should only be enabled when level is "all".
@@ -165,6 +187,9 @@ export class PostHogTelemetryClient extends BaseTelemetryClient {
 	}
 
 	public override async shutdown(): Promise<void> {
+		if (DISABLE_POSTHOG_TELEMETRY) {
+			return
+		}
 		await this.client.shutdown()
 	}
 }
