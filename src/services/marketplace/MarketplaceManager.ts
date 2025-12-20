@@ -16,6 +16,8 @@ import type { CustomModesManager } from "../../core/config/CustomModesManager"
 import { RemoteConfigLoader } from "./RemoteConfigLoader"
 import { SimpleInstaller } from "./SimpleInstaller"
 
+const DISABLE_MARKETPLACE_REMOTE = true
+
 export interface MarketplaceItemsResponse {
 	organizationMcps: MarketplaceItem[]
 	marketplaceItems: MarketplaceItem[]
@@ -35,6 +37,13 @@ export class MarketplaceManager {
 	}
 
 	async getMarketplaceItems(): Promise<MarketplaceItemsResponse> {
+		if (DISABLE_MARKETPLACE_REMOTE) {
+			return {
+				organizationMcps: [],
+				marketplaceItems: [],
+				errors: undefined,
+			}
+		}
 		try {
 			const errors: string[] = []
 
