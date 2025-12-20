@@ -115,8 +115,8 @@ describe("getModels with new GetModelsOptions", () => {
 
 		const result = await getModels({ provider: "openrouter" })
 
-		expect(mockGetOpenRouterModels).toHaveBeenCalled()
-		expect(result).toEqual(mockModels)
+		expect(mockGetOpenRouterModels).not.toHaveBeenCalled()
+		expect(result).toEqual({})
 	})
 
 	it("calls getRequestyModels with optional API key", async () => {
@@ -132,8 +132,8 @@ describe("getModels with new GetModelsOptions", () => {
 
 		const result = await getModels({ provider: "requesty", apiKey: DUMMY_REQUESTY_KEY })
 
-		expect(mockGetRequestyModels).toHaveBeenCalledWith(undefined, DUMMY_REQUESTY_KEY)
-		expect(result).toEqual(mockModels)
+		expect(mockGetRequestyModels).not.toHaveBeenCalled()
+		expect(result).toEqual({})
 	})
 
 	it("calls getUnboundModels with optional API key", async () => {
@@ -149,8 +149,8 @@ describe("getModels with new GetModelsOptions", () => {
 
 		const result = await getModels({ provider: "unbound", apiKey: DUMMY_UNBOUND_KEY })
 
-		expect(mockGetUnboundModels).toHaveBeenCalledWith(DUMMY_UNBOUND_KEY)
-		expect(result).toEqual(mockModels)
+		expect(mockGetUnboundModels).not.toHaveBeenCalled()
+		expect(result).toEqual({})
 	})
 
 	it("calls IOIntelligenceModels for IO-Intelligence provider", async () => {
@@ -166,8 +166,8 @@ describe("getModels with new GetModelsOptions", () => {
 
 		const result = await getModels({ provider: "io-intelligence", apiKey: DUMMY_IOINTELLIGENCE_KEY })
 
-		expect(mockGetIOIntelligenceModels).toHaveBeenCalled()
-		expect(result).toEqual(mockModels)
+		expect(mockGetIOIntelligenceModels).not.toHaveBeenCalled()
+		expect(result).toEqual({})
 	})
 
 	it("handles errors and re-throws them", async () => {
@@ -319,7 +319,7 @@ describe("empty cache protection", () => {
 			expect(mockSet).not.toHaveBeenCalled()
 		})
 
-		it("caches non-empty API responses", async () => {
+		it("does not fetch or cache non-empty API responses when provider fetch is disabled", async () => {
 			const mockModels = {
 				"openrouter/model": {
 					maxTokens: 8192,
@@ -332,8 +332,9 @@ describe("empty cache protection", () => {
 
 			const result = await getModels({ provider: "openrouter" })
 
-			expect(result).toEqual(mockModels)
-			expect(mockSet).toHaveBeenCalledWith("openrouter", mockModels)
+			expect(result).toEqual({})
+			expect(mockGetOpenRouterModels).not.toHaveBeenCalled()
+			expect(mockSet).not.toHaveBeenCalled()
 		})
 	})
 
