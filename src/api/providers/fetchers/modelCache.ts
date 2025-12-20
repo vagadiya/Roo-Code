@@ -32,6 +32,8 @@ import { getChutesModels } from "./chutes"
 
 const memoryCache = new NodeCache({ stdTTL: 5 * 60, checkperiod: 5 * 60 })
 
+const DISABLE_MODEL_CACHE_REFRESH = true
+
 // Zod schema for validating ModelRecord structure from disk cache
 const modelRecordSchema = z.record(z.string(), modelInfoSchema)
 
@@ -178,6 +180,9 @@ export const getModels = async (options: GetModelsOptions): Promise<ModelRecord>
  */
 export const refreshModels = async (options: GetModelsOptions): Promise<ModelRecord> => {
 	const { provider } = options
+	if (DISABLE_MODEL_CACHE_REFRESH) {
+		return getModelsFromCache(provider) || {}
+	}
 
 	// Check if there's already an in-flight refresh for this provider
 	// This prevents race conditions where multiple concurrent refreshes might
@@ -243,6 +248,9 @@ export const refreshModels = async (options: GetModelsOptions): Promise<ModelRec
  * Should be called once during extension activation.
  */
 export async function initializeModelCacheRefresh(): Promise<void> {
+	if (DISABLE_MODEL_CACHE_REFRESH) {
+		return
+	}
 	// Wait for extension to fully activate before refreshing
 	setTimeout(async () => {
 		// Providers that work without API keys
