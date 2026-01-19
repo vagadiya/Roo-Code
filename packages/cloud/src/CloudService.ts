@@ -31,6 +31,8 @@ type AuthStateChangedPayload = CloudServiceEvents["auth-state-changed"][0]
 type AuthUserInfoPayload = CloudServiceEvents["user-info"][0]
 type SettingsPayload = CloudServiceEvents["settings-updated"][0]
 
+const DISABLE_CLOUD = true
+
 export class CloudService extends EventEmitter<CloudServiceEvents> implements Disposable {
 	private static _instance: CloudService | null = null
 
@@ -111,6 +113,10 @@ export class CloudService extends EventEmitter<CloudServiceEvents> implements Di
 	}
 
 	public async initialize(): Promise<void> {
+		if (DISABLE_CLOUD) {
+			this.isInitialized = true
+			return
+		}
 		if (this.isInitialized) {
 			return
 		}
@@ -179,64 +185,100 @@ export class CloudService extends EventEmitter<CloudServiceEvents> implements Di
 	// AuthService
 
 	public async login(landingPageSlug?: string, useProviderSignup: boolean = false): Promise<void> {
+		if (DISABLE_CLOUD) {
+			return
+		}
 		this.ensureInitialized()
 		return this.authService!.login(landingPageSlug, useProviderSignup)
 	}
 
 	public async logout(): Promise<void> {
+		if (DISABLE_CLOUD) {
+			return
+		}
 		this.ensureInitialized()
 		return this.authService!.logout()
 	}
 
 	public isAuthenticated(): boolean {
+		if (DISABLE_CLOUD) {
+			return false
+		}
 		this.ensureInitialized()
 		return this.authService!.isAuthenticated()
 	}
 
 	public hasActiveSession(): boolean {
+		if (DISABLE_CLOUD) {
+			return false
+		}
 		this.ensureInitialized()
 		return this.authService!.hasActiveSession()
 	}
 
 	public hasOrIsAcquiringActiveSession(): boolean {
+		if (DISABLE_CLOUD) {
+			return false
+		}
 		this.ensureInitialized()
 		return this.authService!.hasOrIsAcquiringActiveSession()
 	}
 
 	public getUserInfo(): CloudUserInfo | null {
+		if (DISABLE_CLOUD) {
+			return null
+		}
 		this.ensureInitialized()
 		return this.authService!.getUserInfo()
 	}
 
 	public getOrganizationId(): string | null {
+		if (DISABLE_CLOUD) {
+			return null
+		}
 		this.ensureInitialized()
 		const userInfo = this.authService!.getUserInfo()
 		return userInfo?.organizationId || null
 	}
 
 	public getOrganizationName(): string | null {
+		if (DISABLE_CLOUD) {
+			return null
+		}
 		this.ensureInitialized()
 		const userInfo = this.authService!.getUserInfo()
 		return userInfo?.organizationName || null
 	}
 
 	public getOrganizationRole(): string | null {
+		if (DISABLE_CLOUD) {
+			return null
+		}
 		this.ensureInitialized()
 		const userInfo = this.authService!.getUserInfo()
 		return userInfo?.organizationRole || null
 	}
 
 	public hasStoredOrganizationId(): boolean {
+		if (DISABLE_CLOUD) {
+			return false
+		}
 		this.ensureInitialized()
 		return this.authService!.getStoredOrganizationId() !== null
 	}
 
 	public getStoredOrganizationId(): string | null {
+		if (DISABLE_CLOUD) {
+			return null
+		}
 		this.ensureInitialized()
 		return this.authService!.getStoredOrganizationId()
 	}
 
 	public getAuthState(): string {
+		if (DISABLE_CLOUD) {
+			return "logged-out"
+		}
 		this.ensureInitialized()
 		return this.authService!.getState()
 	}
@@ -247,58 +289,83 @@ export class CloudService extends EventEmitter<CloudServiceEvents> implements Di
 		organizationId?: string | null,
 		providerModel?: string | null,
 	): Promise<void> {
+		if (DISABLE_CLOUD) {
+			return
+		}
 		this.ensureInitialized()
 		return this.authService!.handleCallback(code, state, organizationId, providerModel)
 	}
 
 	public async switchOrganization(organizationId: string | null): Promise<void> {
+		if (DISABLE_CLOUD) {
+			return
+		}
 		this.ensureInitialized()
-
-		// Perform the organization switch
-		// StaticTokenAuthService will throw an error if organization switching is not supported
-		await this.authService!.switchOrganization(organizationId)
+		return this.authService!.switchOrganization(organizationId)
 	}
 
 	public async getOrganizationMemberships(): Promise<CloudOrganizationMembership[]> {
+		if (DISABLE_CLOUD) {
+			return []
+		}
 		this.ensureInitialized()
-
-		// StaticTokenAuthService will throw an error if organization memberships are not supported
-		return await this.authService!.getOrganizationMemberships()
+		return this.authService!.getOrganizationMemberships()
 	}
 
 	// SettingsService
 
 	public getAllowList(): OrganizationAllowList {
+		if (DISABLE_CLOUD) {
+			return { allowAll: true, providers: {} }
+		}
 		this.ensureInitialized()
 		return this.settingsService!.getAllowList()
 	}
 
 	public getOrganizationSettings(): OrganizationSettings | undefined {
+		if (DISABLE_CLOUD) {
+			return undefined
+		}
 		this.ensureInitialized()
 		return this.settingsService!.getSettings()
 	}
 
 	public getUserSettings(): UserSettingsData | undefined {
+		if (DISABLE_CLOUD) {
+			return undefined
+		}
 		this.ensureInitialized()
 		return this.settingsService!.getUserSettings()
 	}
 
 	public getUserFeatures(): UserFeatures {
+		if (DISABLE_CLOUD) {
+			return {}
+		}
 		this.ensureInitialized()
 		return this.settingsService!.getUserFeatures()
 	}
 
 	public getUserSettingsConfig(): UserSettingsConfig {
+		if (DISABLE_CLOUD) {
+			return {}
+		}
 		this.ensureInitialized()
 		return this.settingsService!.getUserSettingsConfig()
 	}
 
 	public async updateUserSettings(settings: Partial<UserSettingsConfig>): Promise<boolean> {
+		if (DISABLE_CLOUD) {
+			return false
+		}
 		this.ensureInitialized()
 		return this.settingsService!.updateUserSettings(settings)
 	}
 
 	public isTaskSyncEnabled(): boolean {
+		if (DISABLE_CLOUD) {
+			return false
+		}
 		this.ensureInitialized()
 		return this.settingsService!.isTaskSyncEnabled()
 	}
@@ -306,6 +373,9 @@ export class CloudService extends EventEmitter<CloudServiceEvents> implements Di
 	// TelemetryClient
 
 	public captureEvent(event: TelemetryEvent): void {
+		if (DISABLE_CLOUD) {
+			return
+		}
 		this.ensureInitialized()
 		this.telemetryClient!.capture(event)
 	}
@@ -317,6 +387,9 @@ export class CloudService extends EventEmitter<CloudServiceEvents> implements Di
 		visibility: ShareVisibility = "organization",
 		clineMessages?: ClineMessage[],
 	) {
+		if (DISABLE_CLOUD) {
+			throw new Error("CloudService is disabled")
+		}
 		this.ensureInitialized()
 
 		try {
@@ -333,11 +406,17 @@ export class CloudService extends EventEmitter<CloudServiceEvents> implements Di
 	}
 
 	public async canShareTask(): Promise<boolean> {
+		if (DISABLE_CLOUD) {
+			return false
+		}
 		this.ensureInitialized()
 		return this.shareService!.canShareTask()
 	}
 
 	public async canSharePublicly(): Promise<boolean> {
+		if (DISABLE_CLOUD) {
+			return false
+		}
 		this.ensureInitialized()
 		return this.shareService!.canSharePublicly()
 	}
@@ -391,8 +470,11 @@ export class CloudService extends EventEmitter<CloudServiceEvents> implements Di
 		}
 
 		this._instance = new CloudService(context, log)
-
-		await this._instance.initialize()
+		if (!DISABLE_CLOUD) {
+			await this._instance.initialize()
+		} else {
+			this._instance.isInitialized = true
+		}
 
 		if (eventHandlers) {
 			for (const [event, handler] of Object.entries(eventHandlers)) {
@@ -405,12 +487,17 @@ export class CloudService extends EventEmitter<CloudServiceEvents> implements Di
 			}
 		}
 
-		await this._instance.authService?.broadcast()
+		if (!DISABLE_CLOUD) {
+			await this._instance.authService?.broadcast()
+		}
 
 		return this._instance
 	}
 
 	static hasInstance(): boolean {
+		if (DISABLE_CLOUD) {
+			return false
+		}
 		return this._instance !== null && this._instance.isInitialized
 	}
 
@@ -422,6 +509,9 @@ export class CloudService extends EventEmitter<CloudServiceEvents> implements Di
 	}
 
 	static isEnabled(): boolean {
+		if (DISABLE_CLOUD) {
+			return false
+		}
 		return !!this._instance?.isAuthenticated()
 	}
 

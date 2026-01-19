@@ -35,6 +35,8 @@ import { Mention } from "./Mention"
 import { TodoListDisplay } from "./TodoListDisplay"
 import { LucideIconButton } from "./LucideIconButton"
 
+const DISABLE_CLOUD = true
+
 export interface TaskHeaderProps {
 	task: ClineMessage
 	tokensIn: number
@@ -410,7 +412,7 @@ const TaskHeader = ({
 				{/* Todo list - always shown at bottom when todos exist */}
 				{hasTodos && <TodoListDisplay todos={todos ?? (task as any)?.tool?.todos ?? []} />}
 			</div>
-			<CloudUpsellDialog open={isOpen} onOpenChange={closeUpsell} onConnect={handleConnect} />
+			{!DISABLE_CLOUD && <CloudUpsellDialog open={isOpen} onOpenChange={closeUpsell} onConnect={handleConnect} />}
 		</div>
 	)
 }
