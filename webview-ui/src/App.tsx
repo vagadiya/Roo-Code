@@ -25,6 +25,8 @@ import { useAddNonInteractiveClickListener } from "./components/ui/hooks/useNonI
 import { TooltipProvider } from "./components/ui/tooltip"
 import { STANDARD_TOOLTIP_DELAY } from "./components/ui/standard-tooltip"
 
+const DISABLE_CLOUD = true
+
 type Tab = "settings" | "history" | "chat" | "marketplace" | "cloud" | "worktrees"
 
 interface DeleteMessageDialogState {
@@ -95,6 +97,9 @@ const App = () => {
 
 	const switchTab = useCallback(
 		(newTab: Tab) => {
+			if (DISABLE_CLOUD && newTab === "cloud") {
+				return
+			}
 			// Only check MDM compliance if mdmCompliant is explicitly false (meaning there's an MDM policy and user is non-compliant)
 			// If mdmCompliant is undefined or true, allow tab switching
 			if (mdmCompliant === false && newTab !== "cloud") {
@@ -138,6 +143,9 @@ const App = () => {
 					const marketplaceTab = message.values?.marketplaceTab as string | undefined
 
 					if (newTab) {
+						if (DISABLE_CLOUD && newTab === "cloud") {
+							return
+						}
 						switchTab(newTab)
 						setCurrentSection(section)
 						setCurrentMarketplaceTab(marketplaceTab)
@@ -239,7 +247,7 @@ const App = () => {
 					targetTab={currentMarketplaceTab as "mcp" | "mode" | undefined}
 				/>
 			)}
-			{tab === "cloud" && (
+			{!DISABLE_CLOUD && tab === "cloud" && (
 				<CloudView
 					userInfo={cloudUserInfo}
 					isAuthenticated={cloudIsAuthenticated}

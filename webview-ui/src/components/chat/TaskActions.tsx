@@ -13,6 +13,8 @@ import { CloudTaskButton } from "./CloudTaskButton"
 import { CopyIcon, DownloadIcon, Trash2Icon, FileJsonIcon, MessageSquareCodeIcon } from "lucide-react"
 import { LucideIconButton } from "./LucideIconButton"
 
+const DISABLE_CLOUD = true
+
 interface TaskActionsProps {
 	item?: HistoryItem
 	buttonsDisabled: boolean
@@ -63,8 +65,12 @@ export const TaskActions = ({ item, buttonsDisabled }: TaskActionsProps) => {
 					)}
 				</>
 			)}
-			<ShareButton item={item} disabled={false} />
-			<CloudTaskButton item={item} disabled={buttonsDisabled} />
+			{!DISABLE_CLOUD && (
+				<>
+					<ShareButton item={item} disabled={false} />
+					<CloudTaskButton item={item} disabled={buttonsDisabled} />
+				</>
+			)}
 			{debug && item?.id && (
 				<>
 					<LucideIconButton

@@ -4,6 +4,8 @@ import { vscode } from "@/utils/vscode"
 import { telemetryClient } from "@/utils/TelemetryClient"
 import { useExtensionState } from "@/context/ExtensionStateContext"
 
+const DISABLE_CLOUD = true
+
 interface UseCloudUpsellOptions {
 	onAuthSuccess?: () => void
 	autoOpenOnAuth?: boolean
@@ -19,6 +21,9 @@ export const useCloudUpsell = (options: UseCloudUpsellOptions = {}) => {
 
 	// Track authentication state changes
 	useEffect(() => {
+		if (DISABLE_CLOUD) {
+			return
+		}
 		if (!cloudIsAuthenticated || !sharingEnabled) {
 			wasUnauthenticatedRef.current = true
 		} else if (wasUnauthenticatedRef.current && cloudIsAuthenticated && sharingEnabled) {
@@ -40,6 +45,9 @@ export const useCloudUpsell = (options: UseCloudUpsellOptions = {}) => {
 	}, [cloudIsAuthenticated, sharingEnabled, onAuthSuccess, autoOpenOnAuth, shouldOpenOnAuth])
 
 	const openUpsell = useCallback(() => {
+		if (DISABLE_CLOUD) {
+			return
+		}
 		setIsOpen(true)
 	}, [])
 
@@ -49,6 +57,9 @@ export const useCloudUpsell = (options: UseCloudUpsellOptions = {}) => {
 	}, [])
 
 	const handleConnect = useCallback(() => {
+		if (DISABLE_CLOUD) {
+			return
+		}
 		// Mark that authentication was initiated from this hook
 		initiatedAuthRef.current = true
 		setShouldOpenOnAuth(true)
@@ -61,7 +72,7 @@ export const useCloudUpsell = (options: UseCloudUpsellOptions = {}) => {
 	}, [closeUpsell])
 
 	return {
-		isOpen,
+		isOpen: DISABLE_CLOUD ? false : isOpen,
 		openUpsell,
 		closeUpsell,
 		handleConnect,
