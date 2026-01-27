@@ -10,6 +10,8 @@ import {
 } from "@roo-code/types"
 import { getRooCodeApiUrl } from "@roo-code/cloud"
 
+const DISABLE_CLOUD = true
+
 const modeMarketplaceResponse = z.object({
 	items: z.array(modeMarketplaceItemSchema),
 })
@@ -84,6 +86,10 @@ export class RemoteConfigLoader {
 	}
 
 	private async fetchWithRetry<T>(url: string, maxRetries = 3): Promise<T> {
+		if (DISABLE_CLOUD) {
+			throw new Error("Cloud is disabled")
+		}
+
 		let lastError: Error
 
 		for (let i = 0; i < maxRetries; i++) {
