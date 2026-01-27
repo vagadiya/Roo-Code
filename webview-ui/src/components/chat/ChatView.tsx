@@ -50,6 +50,8 @@ import DismissibleUpsell from "../common/DismissibleUpsell"
 import { useCloudUpsell } from "@src/hooks/useCloudUpsell"
 import { Cloud } from "lucide-react"
 
+const DISABLE_CLOUD = true
+
 export interface ChatViewProps {
 	isHidden: boolean
 	showAnnouncement: boolean
@@ -1701,7 +1703,9 @@ const ChatViewComponent: React.ForwardRefRenderFunction<ChatViewRef, ChatViewPro
 			)}
 
 			<div id="roo-portal" />
-			<CloudUpsellDialog open={isUpsellOpen} onOpenChange={closeUpsell} onConnect={handleConnect} />
+			{!DISABLE_CLOUD && (
+				<CloudUpsellDialog open={isUpsellOpen} onOpenChange={closeUpsell} onConnect={handleConnect} />
+			)}
 		</div>
 	)
 }

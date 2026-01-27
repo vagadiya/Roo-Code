@@ -65,7 +65,8 @@
 				{
 					"type": "webview",
 					"id": "roo-cline.SidebarProvider",
-					"name": "%views.sidebar.name%"
+					"name": "%views.sidebar.name%",
+					"icon": "assets/icons/icon.svg"
 				}
 			]
 		},
@@ -89,11 +90,6 @@
 				"command": "roo-cline.popoutButtonClicked",
 				"title": "%command.openInEditor.title%",
 				"icon": "$(link-external)"
-			},
-			{
-				"command": "roo-cline.cloudButtonClicked",
-				"title": "%command.cloud.title%",
-				"icon": "$(cloud)"
 			},
 			{
 				"command": "roo-cline.settingsButtonClicked",
@@ -224,13 +220,8 @@
 					"when": "view == roo-cline.SidebarProvider"
 				},
 				{
-					"command": "roo-cline.cloudButtonClicked",
-					"group": "navigation@3",
-					"when": "view == roo-cline.SidebarProvider"
-				},
-				{
 					"command": "roo-cline.marketplaceButtonClicked",
-					"group": "navigation@4",
+					"group": "navigation@3",
 					"when": "view == roo-cline.SidebarProvider"
 				},
 				{
@@ -256,13 +247,8 @@
 					"when": "activeWebviewPanelId == roo-cline.TabPanelProvider"
 				},
 				{
-					"command": "roo-cline.cloudButtonClicked",
-					"group": "navigation@3",
-					"when": "activeWebviewPanelId == roo-cline.TabPanelProvider"
-				},
-				{
 					"command": "roo-cline.marketplaceButtonClicked",
-					"group": "navigation@4",
+					"group": "navigation@3",
 					"when": "activeWebviewPanelId == roo-cline.TabPanelProvider"
 				},
 				{
