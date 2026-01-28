@@ -38,6 +38,10 @@ function isModelCacheRefreshDisabled(provider: RouterName): boolean {
 	return DISABLE_MODEL_CACHE_REFRESH && provider !== "litellm"
 }
 
+function isModelProviderFetchDisabled(provider: RouterName): boolean {
+	return DISABLE_MODEL_CACHE_REFRESH && provider !== "litellm"
+}
+
 // Zod schema for validating ModelRecord structure from disk cache
 const modelRecordSchema = z.record(z.string(), modelInfoSchema)
 
@@ -73,13 +77,22 @@ async function fetchModelsFromProvider(options: GetModelsOptions): Promise<Model
 
 	switch (provider) {
 		case "openrouter":
+			if (isModelProviderFetchDisabled(provider)) {
+				return {}
+			}
 			models = await getOpenRouterModels()
 			break
 		case "requesty":
+			if (isModelProviderFetchDisabled(provider)) {
+				return {}
+			}
 			// Requesty models endpoint requires an API key for per-user custom policies.
 			models = await getRequestyModels(options.baseUrl, options.apiKey)
 			break
 		case "unbound":
+			if (isModelProviderFetchDisabled(provider)) {
+				return {}
+			}
 			// Unbound models endpoint requires an API key to fetch application specific models.
 			models = await getUnboundModels(options.apiKey)
 			break
@@ -88,30 +101,54 @@ async function fetchModelsFromProvider(options: GetModelsOptions): Promise<Model
 			models = await getLiteLLMModels(options.apiKey, options.baseUrl)
 			break
 		case "ollama":
+			if (isModelProviderFetchDisabled(provider)) {
+				return {}
+			}
 			models = await getOllamaModels(options.baseUrl, options.apiKey)
 			break
 		case "lmstudio":
+			if (isModelProviderFetchDisabled(provider)) {
+				return {}
+			}
 			models = await getLMStudioModels(options.baseUrl)
 			break
 		case "deepinfra":
+			if (isModelProviderFetchDisabled(provider)) {
+				return {}
+			}
 			models = await getDeepInfraModels(options.apiKey, options.baseUrl)
 			break
 		case "io-intelligence":
+			if (isModelProviderFetchDisabled(provider)) {
+				return {}
+			}
 			models = await getIOIntelligenceModels(options.apiKey)
 			break
 		case "vercel-ai-gateway":
+			if (isModelProviderFetchDisabled(provider)) {
+				return {}
+			}
 			models = await getVercelAiGatewayModels()
 			break
 		case "huggingface":
+			if (isModelProviderFetchDisabled(provider)) {
+				return {}
+			}
 			models = await getHuggingFaceModels()
 			break
 		case "roo": {
+			if (isModelProviderFetchDisabled(provider)) {
+				return {}
+			}
 			// Roo Code Cloud provider requires baseUrl and optional apiKey
 			const rooBaseUrl = options.baseUrl ?? process.env.ROO_CODE_PROVIDER_URL ?? "https://api.roocode.com/proxy"
 			models = await getRooModels(rooBaseUrl, options.apiKey)
 			break
 		}
 		case "chutes":
+			if (isModelProviderFetchDisabled(provider)) {
+				return {}
+			}
 			models = await getChutesModels(options.apiKey)
 			break
 		default: {
