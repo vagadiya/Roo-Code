@@ -76,6 +76,9 @@ const DUMMY_REQUESTY_KEY = "requesty-key-for-testing"
 const DUMMY_UNBOUND_KEY = "unbound-key-for-testing"
 const DUMMY_IOINTELLIGENCE_KEY = "io-intelligence-key-for-testing"
 
+const DUMMY_LITELLM_KEY = "litellm-key-for-testing"
+const DUMMY_LITELLM_BASE_URL = "http://localhost:4000"
+
 describe("getModels with new GetModelsOptions", () => {
 	beforeEach(() => {
 		vi.clearAllMocks()
@@ -339,7 +342,7 @@ describe("empty cache protection", () => {
 	})
 
 	describe("refreshModels", () => {
-		it("keeps existing cache when API returns empty response", async () => {
+		it("skips refresh for openrouter when refresh is disabled", async () => {
 			const existingModels = {
 				"openrouter/existing-model": {
 					maxTokens: 8192,
@@ -349,23 +352,50 @@ describe("empty cache protection", () => {
 				},
 			}
 
-			// Memory cache has existing data
 			mockGet.mockReturnValue(existingModels)
-			// API returns empty (failure)
-			mockGetOpenRouterModels.mockResolvedValue({})
+			mockGetOpenRouterModels.mockResolvedValue({
+				"openrouter/new-model": {
+					maxTokens: 8192,
+					contextWindow: 128000,
+					supportsPromptCache: true,
+					description: "New model",
+				},
+			})
 
 			const { refreshModels } = await import("../modelCache")
 			const result = await refreshModels({ provider: "openrouter" })
 
-			// Should return existing cache, not empty
 			expect(result).toEqual(existingModels)
-			// Should NOT update cache with empty data
+			expect(mockGetOpenRouterModels).not.toHaveBeenCalled()
+		})
+
+		it("keeps existing cache when LiteLLM API returns empty response", async () => {
+			const existingModels = {
+				"litellm/existing-model": {
+					maxTokens: 8192,
+					contextWindow: 128000,
+					supportsPromptCache: false,
+					description: "Existing cached model",
+				},
+			}
+
+			mockGet.mockReturnValue(existingModels)
+			mockGetLiteLLMModels.mockResolvedValue({})
+
+			const { refreshModels } = await import("../modelCache")
+			const result = await refreshModels({
+				provider: "litellm",
+				apiKey: DUMMY_LITELLM_KEY,
+				baseUrl: DUMMY_LITELLM_BASE_URL,
+			})
+
+			expect(result).toEqual(existingModels)
 			expect(mockSet).not.toHaveBeenCalled()
 		})
 
-		it("updates cache when API returns valid non-empty response", async () => {
+		it("updates cache when LiteLLM API returns valid non-empty response", async () => {
 			const existingModels = {
-				"openrouter/old-model": {
+				"litellm/old-model": {
 					maxTokens: 4096,
 					contextWindow: 64000,
 					supportsPromptCache: false,
@@ -373,7 +403,7 @@ describe("empty cache protection", () => {
 				},
 			}
 			const newModels = {
-				"openrouter/new-model": {
+				"litellm/new-model": {
 					maxTokens: 8192,
 					contextWindow: 128000,
 					supportsPromptCache: true,
@@ -382,20 +412,22 @@ describe("empty cache protection", () => {
 			}
 
 			mockGet.mockReturnValue(existingModels)
-			mockGetOpenRouterModels.mockResolvedValue(newModels)
+			mockGetLiteLLMModels.mockResolvedValue(newModels)
 
 			const { refreshModels } = await import("../modelCache")
-			const result = await refreshModels({ provider: "openrouter" })
+			const result = await refreshModels({
+				provider: "litellm",
+				apiKey: DUMMY_LITELLM_KEY,
+				baseUrl: DUMMY_LITELLM_BASE_URL,
+			})
 
-			// Should return new models
 			expect(result).toEqual(newModels)
-			// Should update cache with new data
-			expect(mockSet).toHaveBeenCalledWith("openrouter", newModels)
+			expect(mockSet).toHaveBeenCalledWith("litellm", newModels)
 		})
 
-		it("returns existing cache on API error", async () => {
+		it("returns existing cache on LiteLLM API error", async () => {
 			const existingModels = {
-				"openrouter/cached-model": {
+				"litellm/cached-model": {
 					maxTokens: 8192,
 					contextWindow: 128000,
 					supportsPromptCache: false,
@@ -404,71 +436,80 @@ describe("empty cache protection", () => {
 			}
 
 			mockGet.mockReturnValue(existingModels)
-			mockGetOpenRouterModels.mockRejectedValue(new Error("API error"))
+			mockGetLiteLLMModels.mockRejectedValue(new Error("API error"))
 
 			const { refreshModels } = await import("../modelCache")
-			const result = await refreshModels({ provider: "openrouter" })
+			const result = await refreshModels({
+				provider: "litellm",
+				apiKey: DUMMY_LITELLM_KEY,
+				baseUrl: DUMMY_LITELLM_BASE_URL,
+			})
 
-			// Should return existing cache on error
 			expect(result).toEqual(existingModels)
 		})
 
-		it("returns empty object when API errors and no cache exists", async () => {
+		it("returns empty object when LiteLLM API errors and no cache exists", async () => {
 			mockGet.mockReturnValue(undefined)
-			mockGetOpenRouterModels.mockRejectedValue(new Error("API error"))
+			mockGetLiteLLMModels.mockRejectedValue(new Error("API error"))
 
 			const { refreshModels } = await import("../modelCache")
-			const result = await refreshModels({ provider: "openrouter" })
+			const result = await refreshModels({
+				provider: "litellm",
+				apiKey: DUMMY_LITELLM_KEY,
+				baseUrl: DUMMY_LITELLM_BASE_URL,
+			})
 
-			// Should return empty when no cache and API fails
 			expect(result).toEqual({})
 		})
 
-		it("does not cache empty response when no existing cache", async () => {
-			// Both memory and disk cache are empty (initial state)
+		it("does not cache empty LiteLLM response when no existing cache", async () => {
 			mockGet.mockReturnValue(undefined)
-			// API returns empty (failure/rate limit)
-			mockGetOpenRouterModels.mockResolvedValue({})
+			mockGetLiteLLMModels.mockResolvedValue({})
 
 			const { refreshModels } = await import("../modelCache")
-			const result = await refreshModels({ provider: "openrouter" })
+			const result = await refreshModels({
+				provider: "litellm",
+				apiKey: DUMMY_LITELLM_KEY,
+				baseUrl: DUMMY_LITELLM_BASE_URL,
+			})
 
-			// Should return empty but NOT cache it
 			expect(result).toEqual({})
 			expect(mockSet).not.toHaveBeenCalled()
 		})
 
-		it("reuses in-flight request for concurrent calls to same provider", async () => {
+		it("reuses in-flight request for concurrent calls to LiteLLM", async () => {
 			const mockModels = {
-				"openrouter/model": {
+				"litellm/model": {
 					maxTokens: 8192,
 					contextWindow: 128000,
 					supportsPromptCache: false,
-					description: "OpenRouter model",
+					description: "LiteLLM model",
 				},
 			}
 
-			// Create a delayed response to simulate API latency
 			let resolvePromise: (value: typeof mockModels) => void
 			const delayedPromise = new Promise<typeof mockModels>((resolve) => {
 				resolvePromise = resolve
 			})
-			mockGetOpenRouterModels.mockReturnValue(delayedPromise)
+			mockGetLiteLLMModels.mockReturnValue(delayedPromise)
 			mockGet.mockReturnValue(undefined)
 
 			const { refreshModels } = await import("../modelCache")
 
-			// Start two concurrent refresh calls
-			const promise1 = refreshModels({ provider: "openrouter" })
-			const promise2 = refreshModels({ provider: "openrouter" })
+			const promise1 = refreshModels({
+				provider: "litellm",
+				apiKey: DUMMY_LITELLM_KEY,
+				baseUrl: DUMMY_LITELLM_BASE_URL,
+			})
+			const promise2 = refreshModels({
+				provider: "litellm",
+				apiKey: DUMMY_LITELLM_KEY,
+				baseUrl: DUMMY_LITELLM_BASE_URL,
+			})
 
-			// API should only be called once (second call reuses in-flight request)
-			expect(mockGetOpenRouterModels).toHaveBeenCalledTimes(1)
-
-			// Resolve the API call
+			expect(mockGetLiteLLMModels).toHaveBeenCalledTimes(1)
 			resolvePromise!(mockModels)
 
-			// Both promises should resolve to the same result
 			const [result1, result2] = await Promise.all([promise1, promise2])
 			expect(result1).toEqual(mockModels)
 			expect(result2).toEqual(mockModels)
